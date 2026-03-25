@@ -821,6 +821,15 @@ input[type="password"].login-pw:focus { outline: none; border-color: var(--yello
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* ─── Toast notification ─────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(10px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ─── Dashboard: score bars fix ─────────────────────── */
+#scoresList { display: flex; flex-direction: column; }
+
 /* ─── Responsive ─────────────────────────────────────── */
 @media (max-width: 768px) {
   .display-hero { grid-template-columns: 1fr; padding: 48px 20px 40px; }

@@ -1,16 +1,18 @@
-// survey.js – Survey logic, Supabase write
+// survey.js – Survey logic & Supabase write
+// UP2DATE design-aligned rendering
 
 const DIMENSIONS = [
   {
     key: 'ps',
-    title: 'Dimenzió 1: Pszichológiai Biztonság',
-    subtitle: 'Tudományos alap: Amy Edmondson, Harvard Business School',
+    icon: '🛡️',
+    title: 'Pszichológiai Biztonság',
+    subtitle: 'Amy Edmondson · Harvard Business School',
     questions: [
-      'Ebben a csapatban biztonságosan vállalhatok kockázatot anélkül, hogy azt félnék, negatív következményei lesznek.',
+      'Ebben a csapatban biztonságosan vállalhatok kockázatot anélkül, hogy negatív következményektől félnék.',
       'Ha hibázok ebben a csapatban, azt nem tartják ellenem.',
       'A csapat tagjai képesek nehéz, kényes témákat is felvetni.',
       'Könnyen kérhetek segítséget a csapatom többi tagjától.',
-      'Senki sem utasítana vissza vagy büntetne meg azért, mert merészen véleményt nyilvánítok.',
+      'Senki sem utasítana vissza azért, mert merészen véleményt nyilvánítok.',
       'A csapatban értéknek számít az eltérő nézőpont.',
       'Nyugodtan kifejezem a valódi véleményemet, még ha az szemben áll a többségével.',
       'Ha problémát látok, biztos vagyok benne, hogy érdemes szólni róla.'
@@ -19,8 +21,9 @@ const DIMENSIONS = [
   },
   {
     key: 'tr',
-    title: 'Dimenzió 2: Csapatszerepek & Hatékonyság',
-    subtitle: 'Tudományos alap: J. Richard Hackman, team effectiveness model',
+    icon: '⚙️',
+    title: 'Csapatszerepek & Hatékonyság',
+    subtitle: 'J. Richard Hackman · Team Effectiveness Model',
     questions: [
       'Mindenki tisztában van azzal, hogy mi az ő szerepe és felelőssége a csapatban.',
       'A csapatban az erősségek és a feladatok összhangban vannak.',
@@ -35,8 +38,9 @@ const DIMENSIONS = [
   },
   {
     key: 'vc',
-    title: 'Dimenzió 3: Értékek & Kultúra Illeszkedés',
-    subtitle: 'Tudományos alap: Shalom Schwartz, Basic Human Values Theory',
+    icon: '🌐',
+    title: 'Értékek & Kultúra Illeszkedés',
+    subtitle: 'Shalom Schwartz · Basic Human Values Theory',
     questions: [
       'A csapat által képviselt értékek egybeesnek a saját személyes értékeimmel.',
       'Azt érzem, hogy „én is ilyen vagyok, mint ez a csapat."',
@@ -51,8 +55,9 @@ const DIMENSIONS = [
   },
   {
     key: 'cc',
-    title: 'Dimenzió 4: Kommunikáció & Konfliktuskezelés',
-    subtitle: 'Tudományos alap: Thomas-Kilmann Conflict Mode Instrument',
+    icon: '💬',
+    title: 'Kommunikáció & Konfliktuskezelés',
+    subtitle: 'Thomas-Kilmann Conflict Mode Instrument',
     questions: [
       'A csapatban a konfliktusok nyíltan és konstruktívan kerülnek felszínre.',
       'Véleménykülönbség esetén képesek vagyunk kompromisszumot találni anélkül, hogy valaki veszítene.',
@@ -67,8 +72,9 @@ const DIMENSIONS = [
   },
   {
     key: 'sg',
-    title: 'Dimenzió 5: Erősségek & Fejlődési Fókusz',
-    subtitle: 'Tudományos alap: VIA Institute on Character / Strengths-based development',
+    icon: '🌱',
+    title: 'Erősségek & Fejlődési Fókusz',
+    subtitle: 'VIA Institute on Character · Strengths-based Development',
     questions: [
       'Tudom, melyek az erősségeim, és ezeket rendszeresen használhatom a munkámban.',
       'A csapatban az erősségekre építünk, nem a hibák kijavítására fókuszálunk.',
@@ -83,23 +89,21 @@ const DIMENSIONS = [
   }
 ];
 
-// State
+// ─── State ────────────────────────────────────────────────
 let currentDim = 0;
 let memberName = '';
 let teamId = '';
 let answers = {}; // { ps: { q1: 3, q2: 5, ..., open: '...' }, ... }
 
-// Parse URL params
+// ─── URL params ───────────────────────────────────────────
 const params = new URLSearchParams(window.location.search);
 teamId = params.get('team') || '';
 const memberFromUrl = params.get('member') || '';
 
-// Pre-fill member name if in URL
 window.addEventListener('DOMContentLoaded', () => {
   if (memberFromUrl) {
     document.getElementById('memberNameInput').value = memberFromUrl;
   }
-  // Load team name
   if (teamId) loadTeamName();
 });
 
@@ -111,17 +115,20 @@ async function loadTeamName() {
       .eq('id', teamId)
       .single();
     if (data) {
-      document.getElementById('teamNameDisplay').textContent = data.name;
+      const el = document.getElementById('headerTeamName');
+      const bar = document.getElementById('teamNameBar');
+      if (el) el.textContent = data.name;
+      if (bar) bar.textContent = `Team Pulse · ${data.name}`;
     }
-  } catch (e) {
-    // silently ignore
-  }
+  } catch (e) { /* silently ignore */ }
 }
 
+// ─── Welcome → Survey ─────────────────────────────────────
 function startSurvey() {
   memberName = document.getElementById('memberNameInput').value.trim();
   if (!memberName) {
-    alert('Kérlek add meg a nevedet a folytatáshoz!');
+    document.getElementById('memberNameInput').focus();
+    document.getElementById('memberNameInput').style.borderColor = '#e55';
     return;
   }
   if (!teamId) {
@@ -133,109 +140,138 @@ function startSurvey() {
   renderDimension(0);
 }
 
+// ─── Render dimension ─────────────────────────────────────
 function renderDimension(dimIndex) {
   const dim = DIMENSIONS[dimIndex];
-  const savedAnswers = answers[dim.key] || {};
+  const saved = answers[dim.key] || {};
   currentDim = dimIndex;
 
-  // Progress
-  document.getElementById('progressLabel').textContent = `${dimIndex + 1}/5 dimenzió – ${dim.title.split(': ')[1]}`;
-  document.getElementById('progressFill').style.width = `${((dimIndex + 1) / 5) * 100}%`;
+  // Progress bar
+  const pct = Math.round(((dimIndex + 1) / DIMENSIONS.length) * 100);
+  document.getElementById('progressLabel').textContent =
+    `Dimenzió ${dimIndex + 1} / ${DIMENSIONS.length}`;
+  document.getElementById('progressFill').style.width = pct + '%';
 
-  // Back/Next buttons
+  // Nav buttons
   document.getElementById('btnBack').disabled = dimIndex === 0;
-  document.getElementById('btnNext').textContent = dimIndex === 4 ? 'Beküldés ✓' : 'Következő →';
+  document.getElementById('btnNext').textContent =
+    dimIndex === DIMENSIONS.length - 1 ? '✓ Beküldés' : 'Következő →';
 
-  // Render questions
+  // Build card HTML
   const container = document.getElementById('dimensionContainer');
   container.innerHTML = '';
-  container.classList.remove('fade-in');
-  void container.offsetWidth; // reflow to restart animation
-  container.classList.add('fade-in');
 
   const card = document.createElement('div');
-  card.className = 'survey-card';
-  card.innerHTML = `
-    <h2>${dim.title}</h2>
-    <div class="dim-subtitle">${dim.subtitle}</div>
-    <div class="questions-list"></div>
-    <div class="open-question-wrap">
-      <div class="open-question-label">💬 ${dim.openQuestion}</div>
-      <textarea id="open_${dim.key}" placeholder="Opcionális – oszd meg gondolataidat…" rows="3">${savedAnswers.open || ''}</textarea>
+  card.className = 'survey-card fade-up';
+
+  // Dimension header
+  const hdr = document.createElement('div');
+  hdr.className = 'dim-header';
+  hdr.innerHTML = `
+    <div class="dim-icon-big">${dim.icon}</div>
+    <div class="dim-header-text">
+      <h2>${dim.title}</h2>
+      <div class="sub">${dim.subtitle}</div>
     </div>
   `;
+  card.appendChild(hdr);
 
-  const qList = card.querySelector('.questions-list');
+  // Questions
   dim.questions.forEach((qText, i) => {
     const qNum = i + 1;
-    const fieldKey = `q${qNum}`;
-    const selected = savedAnswers[fieldKey] || null;
+    const key = `q${qNum}`;
+    const selected = saved[key] || null;
 
-    const item = document.createElement('div');
-    item.className = 'question-item';
-    item.innerHTML = `
-      <div class="question-text"><strong>${qNum}.</strong> ${qText}</div>
-      <div class="likert-wrap">
-        <div class="likert-labels">
+    const block = document.createElement('div');
+    block.className = 'question-block';
+    block.innerHTML = `
+      <div class="question-text">
+        <span class="q-num">${qNum}</span>${qText}
+      </div>
+      <div class="likert-outer">
+        <div class="likert-scale" id="likert_${dim.key}_${qNum}">
+          ${[1,2,3,4,5,6,7].map(v => `
+            <button
+              class="likert-btn${selected === v ? ' selected' : ''}"
+              data-dim="${dim.key}" data-q="${qNum}" data-val="${v}"
+              onclick="selectAnswer('${dim.key}',${qNum},${v})"
+              type="button">${v}</button>
+          `).join('')}
+        </div>
+        <div class="likert-ends">
           <span>Egyáltalán nem jellemző</span>
           <span>Teljes mértékben jellemző</span>
         </div>
-        <div class="likert-buttons" id="likert_${dim.key}_${qNum}">
-          ${[1,2,3,4,5,6,7].map(v => `
-            <button class="likert-btn ${selected === v ? 'selected' : ''}"
-              data-dim="${dim.key}" data-q="${qNum}" data-val="${v}"
-              onclick="selectAnswer('${dim.key}', ${qNum}, ${v})">
-              ${v}
-            </button>
-          `).join('')}
-        </div>
       </div>
     `;
-    qList.appendChild(item);
+    card.appendChild(block);
   });
 
+  // Open question
+  const openBlock = document.createElement('div');
+  openBlock.className = 'open-block';
+  openBlock.innerHTML = `
+    <div class="open-label">${dim.openQuestion}</div>
+    <textarea
+      id="open_${dim.key}"
+      placeholder="Opcionális – oszd meg gondolataidat…"
+      rows="3">${saved.open || ''}</textarea>
+  `;
+  card.appendChild(openBlock);
+
   container.appendChild(card);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// ─── Answer selection ─────────────────────────────────────
 function selectAnswer(dimKey, qNum, val) {
   if (!answers[dimKey]) answers[dimKey] = {};
   answers[dimKey][`q${qNum}`] = val;
 
-  // Update UI
-  const buttons = document.querySelectorAll(`#likert_${dimKey}_${qNum} .likert-btn`);
-  buttons.forEach(btn => {
+  const btns = document.querySelectorAll(`#likert_${dimKey}_${qNum} .likert-btn`);
+  btns.forEach(btn => {
     btn.classList.toggle('selected', parseInt(btn.dataset.val) === val);
   });
 }
 
+// ─── Save open answer ─────────────────────────────────────
 function saveOpenAnswer() {
   const dim = DIMENSIONS[currentDim];
   if (!answers[dim.key]) answers[dim.key] = {};
-  const textarea = document.getElementById(`open_${dim.key}`);
-  if (textarea) answers[dim.key].open = textarea.value.trim();
+  const ta = document.getElementById(`open_${dim.key}`);
+  if (ta) answers[dim.key].open = ta.value.trim();
 }
 
+// ─── Validation ───────────────────────────────────────────
 function validateCurrentDimension() {
   const dim = DIMENSIONS[currentDim];
   const saved = answers[dim.key] || {};
-  const missing = [];
-  dim.questions.forEach((_, i) => {
-    if (!saved[`q${i+1}`]) missing.push(i + 1);
-  });
+  const missing = dim.questions
+    .map((_, i) => i + 1)
+    .filter(n => !saved[`q${n}`]);
+
   if (missing.length > 0) {
-    alert(`Kérlek válaszolj az összes kérdésre! (Hiányzó: ${missing.join(', ')}. kérdés)`);
+    // Shake the first unanswered question
+    const firstMissing = document.getElementById(`likert_${dim.key}_${missing[0]}`);
+    if (firstMissing) {
+      firstMissing.animate(
+        [{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}],
+        {duration:300}
+      );
+      firstMissing.scrollIntoView({behavior:'smooth', block:'center'});
+    }
     return false;
   }
   return true;
 }
 
+// ─── Navigation ───────────────────────────────────────────
 function goNext() {
   saveOpenAnswer();
   if (!validateCurrentDimension()) return;
 
   if (currentDim < DIMENSIONS.length - 1) {
     renderDimension(currentDim + 1);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   } else {
     submitSurvey();
   }
@@ -243,26 +279,20 @@ function goNext() {
 
 function goPrev() {
   saveOpenAnswer();
-  if (currentDim > 0) {
-    renderDimension(currentDim - 1);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+  if (currentDim > 0) renderDimension(currentDim - 1);
 }
 
+// ─── Submit ───────────────────────────────────────────────
 async function submitSurvey() {
   document.getElementById('screen-survey').style.display = 'none';
   document.getElementById('screen-submitting').style.display = 'block';
 
-  // Build the record
-  const record = {
-    team_id: teamId,
-    member_name: memberName
-  };
-
+  // Build flat record for Supabase
+  const record = { team_id: teamId, member_name: memberName };
   DIMENSIONS.forEach(dim => {
     const saved = answers[dim.key] || {};
     dim.questions.forEach((_, i) => {
-      record[`${dim.key}_${i+1}`] = saved[`q${i+1}`] || null;
+      record[`${dim.key}_${i + 1}`] = saved[`q${i + 1}`] || null;
     });
     record[`${dim.key}_open`] = saved.open || null;
   });
@@ -270,14 +300,19 @@ async function submitSurvey() {
   try {
     const { error } = await supabaseClient.from('responses').insert([record]);
     if (error) throw error;
-    window.location.href = '../thank-you.html';
+    window.location.href = 'thank-you.html';
   } catch (err) {
     console.error(err);
     document.getElementById('screen-submitting').innerHTML = `
-      <p style="color:#e55;text-align:center;padding:40px;">
-        Hiba történt a beküldés során: ${err.message}<br><br>
-        <button class="btn btn--outline" onclick="location.reload()" style="color:#555;border-color:#ddd;">Újrapróbálás</button>
-      </p>
+      <div style="text-align:center;padding:60px 20px;">
+        <div style="font-size:2rem;margin-bottom:16px;">⚠️</div>
+        <div style="font-family:'Exo',sans-serif;font-weight:700;font-size:1.1rem;color:#111;margin-bottom:8px;">
+          Hiba a beküldésnél
+        </div>
+        <div style="color:#888;font-size:0.85rem;margin-bottom:24px;">${err.message}</div>
+        <button class="btn" style="background:var(--yellow);color:#111;font-family:'Exo',sans-serif;font-weight:700;padding:12px 24px;border:none;border-radius:8px;cursor:pointer;"
+          onclick="location.reload()">Újrapróbálás</button>
+      </div>
     `;
   }
 }
