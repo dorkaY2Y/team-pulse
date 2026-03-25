@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Pulse – Kérdőív</title>
+  <link href="https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body.survey-mode .top-bar {
+      background: #fff;
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+    }
+    body.survey-mode .top-bar,
+    body.survey-mode .top-bar a {
+      color: #aaa;
+    }
+
+    .survey-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    /* Welcome screen */
+    .welcome-card {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 16px;
+      padding: 44px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+
+    .welcome-card__eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .welcome-card__title {
+      font-family: 'Exo', sans-serif;
+      font-weight: 900;
+      font-size: 2rem;
+      letter-spacing: -0.03em;
+      color: #111;
+      margin-bottom: 14px;
+      line-height: 1.1;
+    }
+
+    .welcome-card__body {
+      font-size: 0.92rem;
+      color: #555;
+      line-height: 1.75;
+      margin-bottom: 32px;
+    }
+
+    .welcome-card__body strong { color: #111; }
+
+    .dim-preview {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin: 24px 0 32px;
+    }
+
+    .dim-preview-item {
+      background: #f5f4ee;
+      border-radius: 8px;
+      padding: 10px 8px;
+      text-align: center;
+      font-size: 1.2rem;
+    }
+
+    .dim-preview-item span {
+      display: block;
+      font-family: 'Exo', sans-serif;
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #888;
+      margin-top: 6px;
+      line-height: 1.3;
+    }
+
+    /* Dimension header inside card */
+    .dim-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+    }
+
+    .dim-icon-big {
+      width: 52px;
+      height: 52px;
+      background: rgba(222,209,20,0.15);
+      border: 1px solid rgba(222,209,20,0.25);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .dim-header-text h2 {
+      font-family: 'Exo', sans-serif;
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+      color: #111;
+      margin-bottom: 3px;
+    }
+
+    .dim-header-text .sub {
+      font-size: 0.75rem;
+      color: #999;
+      font-style: italic;
+    }
+
+    /* Submitting overlay */
+    .submitting-screen {
+      text-align: center;
+      padding: 80px 0;
+    }
+
+    .submitting-screen .big-spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid rgba(0,0,0,0.08);
+      border-top-color: #DED114;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto 24px;
+    }
+
+    .submitting-screen p {
+      color: #888;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 480px) {
+      .welcome-card { padding: 24px; }
+      .dim-preview { grid-template-columns: repeat(5, 1fr); gap: 4px; }
+      .dim-preview-item { padding: 8px 4px; font-size: 1rem; }
+    }
+  </style>
+</head>
+<body class="survey-mode">
+
+<!-- Top bar -->
+<div class="top-bar">
+  <span id="teamNameBar">Team Pulse by Y2Y</span>
+  <span id="timeBar"></span>
+</div>
+
+<!-- Header -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-wordmark" style="color:#111;">
+      <span class="y2y-badge">Y2Y</span>
+      TEAM PULSE
+    </div>
+    <div id="headerTeamName" style="font-size:0.8rem;color:#999;font-style:italic;"></div>
+  </div>
+</header>
+
+<main>
+  <div class="survey-wrap">
+
+    <!-- Screen: Welcome -->
+    <div id="screen-welcome" class="fade-up">
+      <div class="welcome-card">
+        <div class="welcome-card__eyebrow">
+          <span class="y2y-badge">Y2Y</span>
+          <span style="font-family:'Exo',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#aaa;">Team Assessment</span>
+        </div>
+        <h1 class="welcome-card__title">Üdvözlünk a<br>Team Pulse<br>felmérésben</h1>
+        <p class="welcome-card__body">
+          Ez a kérdőív <strong>5 tudományos dimenzión</strong> keresztül méri fel csapatod egészségét.<br>
+          Kb. <strong>15–20 perc</strong> a kitöltési idő. Kérjük, légy őszinte – a válaszok segítik legjobban a csapatod fejlődését.
+        </p>
+
+        <div class="dim-preview">
+          <div class="dim-preview-item">🛡️<span>Pszicho-lógiai</span></div>
+          <div class="dim-preview-item">⚙️<span>Csapat-szerepek</span></div>
+          <div class="dim-preview-item">🌐<span>Értékek</span></div>
+          <div class="dim-preview-item">💬<span>Kommuni-káció</span></div>
+          <div class="dim-preview-item">🌱<span>Erős-ségek</span></div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="memberNameInput">A te neved <span style="color:#DED114;">*</span></label>
+          <input type="text" class="field-input" id="memberNameInput" placeholder="pl. Kovács Anna"
+            onkeydown="if(event.key==='Enter') startSurvey()">
+          <div style="font-size:0.72rem;color:#bbb;margin-top:6px;">Látható lesz a facilitátor dashboardján. A csapattagokkal nem kerül megosztásra.</div>
+        </div>
+
+        <button class="btn btn--yellow" style="margin-top:8px;width:100%;justify-content:center;font-size:0.95rem;padding:14px;" onclick="startSurvey()">
+          Kezdés →
+        </button>
+      </div>
+    </div>
+
+    <!-- Screen: Survey -->
+    <div id="screen-survey" style="display:none;">
+      <div class="progress-label" id="progressLabel">1 / 5</div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill" style="width:20%"></div>
+      </div>
+
+      <div id="dimensionContainer" class="fade-up"></div>
+
+      <div class="survey-nav">
+        <button class="btn btn--outline" id="btnBack" onclick="goPrev()"
+          style="color:#aaa;border-color:rgba(0,0,0,0.12);background:#fff;" disabled>
+          ← Vissza
+        </button>
+        <button class="btn btn--yellow" id="btnNext" onclick="goNext()">
+          Következő →
+        </button>
+      </div>
+    </div>
+
+    <!-- Screen: Submitting -->
+    <div id="screen-submitting" style="display:none;" class="submitting-screen">
+      <div class="big-spinner"></div>
+      <p>Válaszaid elküldése folyamatban…</p>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config.js"></script>
+<script src="../js/supabase-client.js"></script>
+<script src="../js/survey.js"></script>
+<script>
+  // Show live time
+  function updateTime() {
+    const now = new Date();
+    document.getElementById('timeBar').textContent =
+      now.toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' });
+  }
+  updateTime();
+  setInterval(updateTime, 30000);
+</script>
+</body>
+</html>

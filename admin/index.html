@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Belépés – Team Pulse by Y2Y</title>
+  <link href="https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<div class="login-wrap">
+  <div class="login-panel fade-up">
+
+    <div style="margin-bottom:6px;">
+      <span class="y2y-badge">Y2Y</span>
+    </div>
+
+    <div class="login-display">TEAM<br><em>PULSE</em></div>
+    <div class="login-sub">Facilitátor belépés · Dashboard</div>
+
+    <input type="password" class="login-pw" id="passwordInput"
+      placeholder="••••••••"
+      onkeydown="if(event.key==='Enter') login()">
+
+    <button class="btn btn--yellow" style="width:100%;justify-content:center;font-size:0.95rem;padding:14px;" onclick="login()">
+      Belépés →
+    </button>
+
+    <div class="login-error" id="loginError">Hibás jelszó – próbáld újra.</div>
+
+    <div style="margin-top:40px;padding-top:20px;border-top:1px solid var(--border);font-size:0.72rem;color:var(--muted);text-align:center;letter-spacing:0.06em;">
+      Y2Y Facilitátor &nbsp;·&nbsp; ICF PCC
+    </div>
+  </div>
+</div>
+
+<script>
+  if (sessionStorage.getItem('tp_admin') === 'true') {
+    window.location.href = 'dashboard.html';
+  }
+
+  function login() {
+    const pw = document.getElementById('passwordInput').value;
+    const correct = typeof CONFIG !== 'undefined' ? CONFIG.ADMIN_PASSWORD : 'y2y2024';
+    if (pw === correct) {
+      sessionStorage.setItem('tp_admin', 'true');
+      window.location.href = 'dashboard.html';
+    } else {
+      const err = document.getElementById('loginError');
+      err.style.display = 'block';
+      document.getElementById('passwordInput').value = '';
+      document.getElementById('passwordInput').focus();
+      // shake animation
+      err.animate([{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}], {duration:300});
+    }
+  }
+</script>
+<script src="../config.js"></script>
+</body>
+</html>

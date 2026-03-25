@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Pulse by Y2Y – Csapatassessment</title>
+  <link href="https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .dim-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      padding: 48px 0 40px;
+    }
+
+    .dim-tile {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: all var(--t);
+      cursor: default;
+    }
+
+    .dim-tile:hover {
+      border-color: rgba(222,209,20,0.25);
+      transform: translateY(-2px);
+    }
+
+    .dim-tile__icon { font-size: 1.5rem; }
+
+    .dim-tile__name {
+      font-family: 'Exo', sans-serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      line-height: 1.3;
+      color: var(--white);
+    }
+
+    .dim-tile__src {
+      font-size: 0.7rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .how-section {
+      padding: 48px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      margin-top: 24px;
+    }
+
+    .how-step {
+      background: var(--card);
+      padding: 24px 20px;
+      position: relative;
+    }
+
+    .how-step:first-child { border-radius: var(--radius-lg) 0 0 var(--radius-lg); }
+    .how-step:last-child  { border-radius: 0 var(--radius-lg) var(--radius-lg) 0; }
+
+    .how-num {
+      font-family: 'Exo', sans-serif;
+      font-weight: 900;
+      font-size: 2.5rem;
+      color: var(--yellow);
+      opacity: 0.25;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .how-step h3 {
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+      color: var(--white);
+    }
+
+    .how-step p {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .link-generator {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      margin: 48px 0;
+    }
+
+    .link-generator h2 {
+      font-family: 'Exo', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .link-generator p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .link-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .link-row input {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .generated-result {
+      margin-top: 16px;
+      padding: 14px 18px;
+      background: var(--yellow-bg);
+      border: 1px solid rgba(222,209,20,0.2);
+      border-radius: var(--radius);
+      font-size: 0.82rem;
+      color: var(--yellow);
+      word-break: break-all;
+      cursor: pointer;
+      display: none;
+    }
+
+    .generated-result:hover { background: rgba(222,209,20,0.18); }
+
+    .copy-hint {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    @media (max-width: 900px) {
+      .dim-grid { grid-template-columns: 1fr 1fr; }
+      .how-grid { grid-template-columns: 1fr 1fr; }
+      .how-step:nth-child(2) { border-radius: 0 var(--radius-lg) 0 0; }
+      .how-step:nth-child(3) { border-radius: 0 0 0 var(--radius-lg); }
+    }
+
+    @media (max-width: 600px) {
+      .dim-grid  { grid-template-columns: 1fr; }
+      .how-grid  { grid-template-columns: 1fr; }
+      .how-step  { border-radius: 0 !important; }
+      .how-step:first-child { border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important; }
+      .how-step:last-child  { border-radius: 0 0 var(--radius-lg) var(--radius-lg) !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="top-bar">
+  <span>Tudományosan megalapozott csapatassessment &nbsp;·&nbsp; 5 dimenzió &nbsp;·&nbsp; AI coaching insights</span>
+  <a href="admin/index.html">Facilitátor belépés ↗</a>
+</div>
+
+<!-- Header -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo-wordmark">
+      <span class="y2y-badge">Y2Y</span>
+      TEAM PULSE
+    </a>
+    <div class="header-actions">
+      <a href="admin/index.html" class="btn btn--outline">Dashboard →</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- Display Hero -->
+  <section class="display-hero fade-up">
+    <div>
+      <div style="margin-bottom:18px;">
+        <span class="pill pill--yellow">Assessment eszköz</span>
+      </div>
+      <h1 class="display-hero__title">
+        Mérd fel<br>
+        csapatod<br>
+        <em>valódi</em> erejét
+      </h1>
+    </div>
+    <div class="display-hero__meta">
+      <p style="font-size:1rem;color:var(--white-dim);line-height:1.75;max-width:400px;">
+        Öt tudományosan megalapozott dimenzión keresztül feltárjuk, mi erősíti és mi gátolja a csapatod teljesítményét – konkrét coaching fókuszpontokkal.
+      </p>
+      <div style="display:flex;gap:24px;flex-wrap:wrap;">
+        <div>
+          <div style="font-family:'Exo',sans-serif;font-weight:900;font-size:1.8rem;color:var(--yellow);">5</div>
+          <div class="label-caps" style="margin-top:2px;">Dimenzió</div>
+        </div>
+        <div>
+          <div style="font-family:'Exo',sans-serif;font-weight:900;font-size:1.8rem;color:var(--yellow);">40</div>
+          <div class="label-caps" style="margin-top:2px;">Kérdés</div>
+        </div>
+        <div>
+          <div style="font-family:'Exo',sans-serif;font-weight:900;font-size:1.8rem;color:var(--yellow);">15'</div>
+          <div class="label-caps" style="margin-top:2px;">Kitöltési idő</div>
+        </div>
+      </div>
+      <div class="display-hero__tagline">
+        Edmondson · Hackman · Schwartz · Thomas-Kilmann · VIA
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <div class="page-wrap">
+
+    <!-- 5 Dimensions grid -->
+    <div class="dim-grid fade-up">
+      <div class="dim-tile">
+        <div class="dim-tile__icon">🛡️</div>
+        <div class="dim-tile__name">Pszichológiai Biztonság</div>
+        <div class="dim-tile__src">Amy Edmondson<br>Harvard Business School</div>
+      </div>
+      <div class="dim-tile">
+        <div class="dim-tile__icon">⚙️</div>
+        <div class="dim-tile__name">Csapatszerepek & Hatékonyság</div>
+        <div class="dim-tile__src">J. Richard Hackman<br>Team Effectiveness</div>
+      </div>
+      <div class="dim-tile">
+        <div class="dim-tile__icon">🌐</div>
+        <div class="dim-tile__name">Értékek & Kultúra Illeszkedés</div>
+        <div class="dim-tile__src">Shalom Schwartz<br>Basic Human Values</div>
+      </div>
+      <div class="dim-tile">
+        <div class="dim-tile__icon">💬</div>
+        <div class="dim-tile__name">Kommunikáció & Konfliktus</div>
+        <div class="dim-tile__src">Thomas-Kilmann<br>Conflict Mode</div>
+      </div>
+      <div class="dim-tile">
+        <div class="dim-tile__icon">🌱</div>
+        <div class="dim-tile__name">Erősségek & Fejlődési Fókusz</div>
+        <div class="dim-tile__src">VIA Institute<br>Strengths-based Dev.</div>
+      </div>
+    </div>
+
+    <!-- How it works -->
+    <section class="how-section fade-up">
+      <div class="section-label">
+        <span class="label-caps">Hogyan működik</span>
+      </div>
+      <div class="how-grid">
+        <div class="how-step">
+          <div class="how-num">01</div>
+          <h3>Csapat létrehozása</h3>
+          <p>A facilitátor létrehoz egy csapatot a dashboardon és megosztja a kitöltési linket.</p>
+        </div>
+        <div class="how-step">
+          <div class="how-num">02</div>
+          <h3>Kitöltés</h3>
+          <p>A csapattagok egyénileg töltik ki a 40 kérdéses kérdőívet (~15 perc).</p>
+        </div>
+        <div class="how-step">
+          <div class="how-num">03</div>
+          <h3>Aggregált dashboard</h3>
+          <p>Az eredmények azonnal megjelennek – radar chart, heatmap, nyílt válaszok.</p>
+        </div>
+        <div class="how-step">
+          <div class="how-num">04</div>
+          <h3>AI Coaching Insights</h3>
+          <p>Claude AI elemzi az adatokat és konkrét, csapatra szabott coaching fókuszokat ad.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Link generator -->
+    <div class="link-generator fade-up">
+      <h2>Generálj kitöltési linket</h2>
+      <p>Add meg a Team ID-t (a dashboardon találod) és máris küldheted a linket a csapatnak.</p>
+      <div class="link-row">
+        <input type="text" class="dark-input" id="teamIdInput" placeholder="Team ID (uuid)">
+        <input type="text" class="dark-input" id="memberInput" placeholder="Tag neve (opcionális, előtölti a mezőt)">
+        <button class="btn btn--yellow" onclick="generateLink()">Link generálása →</button>
+      </div>
+      <div class="generated-result" id="generatedResult" onclick="copyLink()">
+        <div id="linkText"></div>
+        <div class="copy-hint">Kattints a másoláshoz</div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer style="border-top:1px solid var(--border);padding:20px 32px;display:flex;align-items:center;justify-content:space-between;font-size:0.75rem;color:var(--muted);">
+  <span>Team Pulse v1.0 &nbsp;·&nbsp; Y2Y Ltd.</span>
+  <span>Y2Y Facilitátor, ICF PCC &nbsp;·&nbsp; <a href="https://y2y.hu" target="_blank" style="color:var(--muted);">y2y.hu ↗</a></span>
+</footer>
+
+<script>
+  function generateLink() {
+    const teamId = document.getElementById('teamIdInput').value.trim();
+    const member = document.getElementById('memberInput').value.trim();
+    if (!teamId) { alert('Add meg a Team ID-t!'); return; }
+
+    const base = window.location.href.replace(/index\.html.*$/, '').replace(/\/$/, '');
+    let link = `${base}/survey.html?team=${encodeURIComponent(teamId)}`;
+    if (member) link += `&member=${encodeURIComponent(member)}`;
+
+    document.getElementById('linkText').textContent = link;
+    document.getElementById('generatedResult').style.display = 'block';
+  }
+
+  function copyLink() {
+    const link = document.getElementById('linkText').textContent;
+    navigator.clipboard.writeText(link).then(() => {
+      const el = document.getElementById('generatedResult');
+      const hint = el.querySelector('.copy-hint');
+      hint.textContent = '✓ Vágólapra másolva!';
+      setTimeout(() => hint.textContent = 'Kattints a másoláshoz', 2000);
+    });
+  }
+</script>
+
+</body>
+</html>
