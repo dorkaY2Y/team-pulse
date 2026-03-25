@@ -3,6 +3,7 @@
 [build]
   publish = "."
   functions = "netlify/functions"
+  command = "node build-config.js"
 
 # Redirect /survey → /survey.html (clean URLs)
 [[redirects]]
