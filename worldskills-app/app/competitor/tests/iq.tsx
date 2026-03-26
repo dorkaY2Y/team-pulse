@@ -521,12 +521,12 @@ export default function IQTestScreen() {
   if (gameState === 'result') {
     const pct = Math.round((score / questions.length) * 100);
     let rating = '';
-    let ratingColor = theme.colors.primary;
-    if (pct >= 90) { rating = 'Kiemelkedő'; ratingColor = theme.colors.success; }
-    else if (pct >= 75) { rating = 'Átlag feletti'; ratingColor = theme.colors.teal; }
-    else if (pct >= 50) { rating = 'Átlagos'; ratingColor = theme.colors.orange; }
-    else if (pct >= 25) { rating = 'Átlag alatti'; ratingColor = theme.colors.yellow; }
-    else { rating = 'Fejlesztendő'; ratingColor = theme.colors.error; }
+    let ratingColor: string = theme.colors.primary;
+    if (pct >= 90) { rating = 'Kiemelkedő'; ratingColor = '#0084AD'; }
+    else if (pct >= 75) { rating = 'Átlag feletti'; ratingColor = '#0084AD'; }
+    else if (pct >= 50) { rating = 'Átlagos'; ratingColor = '#FF6C0C'; }
+    else if (pct >= 25) { rating = 'Átlag alatti'; ratingColor = '#FEE300'; }
+    else { rating = 'Fejlesztendő'; ratingColor = '#D51067'; }
 
     return (
       <SafeAreaView style={styles.container}>
@@ -607,8 +607,8 @@ export default function IQTestScreen() {
         {/* Options A-F */}
         <View style={styles.optionsGrid}>
           {q.options.map((opt, i) => {
-            let borderColor = theme.colors.cardBorder;
-            let bg = theme.colors.card;
+            let borderColor: string = theme.colors.cardBorder;
+            let bg: string = theme.colors.card;
 
             if (selectedAnswer !== null) {
               if (i === q.correctIndex) {

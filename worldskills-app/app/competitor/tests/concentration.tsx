@@ -46,7 +46,7 @@ export default function ConcentrationScreen() {
   const [reactionTime, setReactionTime] = useState(0);
   const [reactionTimes, setReactionTimes] = useState<number[]>([]);
   const reactionStart = useRef(0);
-  const reactionTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const reactionTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   function startTest(type: ConcentrationTest) {
     setTestType(type);

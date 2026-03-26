@@ -278,8 +278,8 @@ export default function QuizScreen() {
 
         <View style={styles.options}>
           {q.options.map((opt, i) => {
-            let optStyle = [styles.option];
-            let textColor = theme.colors.black;
+            let optStyle: any[] = [styles.option];
+            let textColor: string = theme.colors.black;
 
             if (selectedAnswer !== null) {
               if (opt.is_correct) {

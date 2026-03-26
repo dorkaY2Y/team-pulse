@@ -172,7 +172,7 @@ export default function MindsetScreen() {
 
           <View style={styles.infoCards}>
             <View style={styles.infoCard}>
-              <Ionicons name="brain-outline" size={20} color={theme.colors.teal} />
+              <Ionicons name="bulb-outline" size={20} color={theme.colors.teal} />
               <Text style={styles.infoCardText}>Intelligencia</Text>
             </View>
             <View style={styles.infoCard}>
@@ -214,7 +214,7 @@ export default function MindsetScreen() {
 
           <View style={styles.categoryCard}>
             <View style={styles.categoryHeader}>
-              <Ionicons name="brain-outline" size={20} color={theme.colors.teal} />
+              <Ionicons name="bulb-outline" size={20} color={theme.colors.teal} />
               <Text style={styles.categoryName}>Intelligencia</Text>
               <Text style={styles.categoryScore}>{results.intelligence}%</Text>
             </View>
