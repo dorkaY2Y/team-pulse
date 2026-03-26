@@ -9,6 +9,30 @@ import { theme } from '../../lib/theme';
 
 const TEST_CATEGORIES = [
   {
+    id: 'iq',
+    title: 'IQ Teszt',
+    subtitle: 'Progresszív mátrixok • 20 kérdés • 15 perc',
+    icon: 'bulb-outline' as const,
+    color: '#0084AD',
+    route: '/competitor/tests/iq',
+  },
+  {
+    id: 'attention',
+    title: 'Figyelem Teszt',
+    subtitle: 'Bourdon-teszt: 400 szimbólum, 5 perc',
+    icon: 'scan-outline' as const,
+    color: '#0077C8',
+    route: '/competitor/tests/attention',
+  },
+  {
+    id: 'concentration',
+    title: 'Koncentráció',
+    subtitle: 'Stroop, memória, reakcióidő',
+    icon: 'eye-outline' as const,
+    color: '#72D0EB',
+    route: '/competitor/tests/concentration',
+  },
+  {
     id: 'mindset',
     title: 'Fejlődési Szemlélet',
     subtitle: 'Growth Mindset kérdőív',
@@ -23,38 +47,6 @@ const TEST_CATEGORIES = [
     icon: 'flag-outline' as const,
     color: '#FF6C0C',
     route: '/competitor/tests/goals',
-  },
-  {
-    id: 'attention',
-    title: 'Figyelem Teszt',
-    subtitle: 'Bourdon-teszt: 400 szimbólum, 5 perc',
-    icon: 'scan-outline' as const,
-    color: '#0084AD',
-    route: '/competitor/tests/attention',
-  },
-  {
-    id: 'concentration',
-    title: 'Koncentráció',
-    subtitle: 'Stroop, memória, reakcióidő',
-    icon: 'eye-outline' as const,
-    color: '#0077C8',
-    route: '/competitor/tests/concentration',
-  },
-  {
-    id: 'iq',
-    title: 'IQ Teszt',
-    subtitle: 'Logikai gondolkodás és mintázatfelismerés',
-    icon: 'bulb-outline' as const,
-    color: '#0084AD',
-    route: '/competitor/tests/iq',
-  },
-  {
-    id: 'multiple_choice',
-    title: 'Feleletválasztós',
-    subtitle: 'Tudásfelmérő kérdéssorok',
-    icon: 'list-outline' as const,
-    color: '#D51067',
-    route: '/competitor/tests/quiz',
   },
 ];
 
