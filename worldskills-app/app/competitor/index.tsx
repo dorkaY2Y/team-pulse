@@ -25,9 +25,17 @@ const TEST_CATEGORIES = [
     route: '/competitor/tests/goals',
   },
   {
+    id: 'attention',
+    title: 'Figyelem Teszt',
+    subtitle: 'Bourdon-teszt: 400 szimbólum, 5 perc',
+    icon: 'scan-outline' as const,
+    color: '#0084AD',
+    route: '/competitor/tests/attention',
+  },
+  {
     id: 'concentration',
     title: 'Koncentráció',
-    subtitle: 'Figyelmi és reakcióidő tesztek',
+    subtitle: 'Stroop, memória, reakcióidő',
     icon: 'eye-outline' as const,
     color: '#0077C8',
     route: '/competitor/tests/concentration',
