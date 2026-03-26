@@ -242,8 +242,8 @@ export default function ConcentrationScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.testCard} onPress={() => startTest('reaction')}>
-            <View style={[styles.testCardIcon, { backgroundColor: '#E4002B15' }]}>
-              <Ionicons name="flash-outline" size={28} color="#E4002B" />
+            <View style={[styles.testCardIcon, { backgroundColor: '#D5106715' }]}>
+              <Ionicons name="flash-outline" size={28} color="#D51067" />
             </View>
             <Text style={styles.testCardTitle}>Reakcióidő</Text>
             <Text style={styles.testCardDesc}>
@@ -506,7 +506,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.darkGray,
   },
   reactionReady: {
-    backgroundColor: '#E4002B',
+    backgroundColor: '#D51067',
   },
   reactionGo: {
     backgroundColor: '#00A651',

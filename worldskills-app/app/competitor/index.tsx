@@ -29,7 +29,7 @@ const TEST_CATEGORIES = [
     title: 'Feleletválasztós',
     subtitle: 'Tudásfelmérő kérdéssorok',
     icon: 'list-outline' as const,
-    color: '#E4002B',
+    color: '#D51067',
     route: '/competitor/tests/quiz',
   },
 ];

@@ -1,10 +1,23 @@
 // WorldSkills Official Brand Design System
+// Colors from: https://worldskills.org/brand/visual-identity/
 export const theme = {
   colors: {
     // Primary WorldSkills colors
-    primary: '#E4002B',       // WorldSkills Red
-    primaryDark: '#B8001F',   // Darker red for pressed states
-    primaryLight: '#FF1A45',  // Lighter red for highlights
+    primary: '#003764',       // WorldSkills Dark Blue (Navy) - logo color
+    primaryDark: '#002647',   // Darker navy for pressed states
+    primaryLight: '#0077C8',  // Lighter blue for highlights
+
+    // WorldSkills brand palette
+    yellow: '#FEE300',        // Pantone 102C
+    magenta: '#D51067',       // Pantone 214C
+    cyan: '#72D0EB',          // Pantone 0821C
+    orange: '#FF6C0C',        // Pantone 1585C
+    purple: '#4A0D66',        // Pantone 2617C
+    teal: '#0084AD',          // Pantone 7704C
+    mint: '#8AE2D1',          // Pantone 332C
+
+    // Accent - magenta used for CTAs and highlights
+    accent: '#D51067',
 
     // Neutrals
     black: '#1A1A1A',
@@ -16,10 +29,10 @@ export const theme = {
     white: '#FFFFFF',
 
     // Functional
-    success: '#00A651',
-    warning: '#FFB81C',
-    error: '#E4002B',
-    info: '#0077C8',
+    success: '#0084AD',
+    warning: '#FEE300',
+    error: '#D51067',
+    info: '#72D0EB',
 
     // Card & surface
     card: '#FFFFFF',
