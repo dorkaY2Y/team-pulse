@@ -9,6 +9,22 @@ import { theme } from '../../lib/theme';
 
 const TEST_CATEGORIES = [
   {
+    id: 'mindset',
+    title: 'Fejlődési Szemlélet',
+    subtitle: 'Growth Mindset kérdőív',
+    icon: 'analytics-outline' as const,
+    color: '#4A0D66',
+    route: '/competitor/tests/mindset',
+  },
+  {
+    id: 'goals',
+    title: 'Célorientáció',
+    subtitle: 'Viszonyító és elsajátítási célok',
+    icon: 'flag-outline' as const,
+    color: '#FF6C0C',
+    route: '/competitor/tests/goals',
+  },
+  {
     id: 'concentration',
     title: 'Koncentráció',
     subtitle: 'Figyelmi és reakcióidő tesztek',
@@ -21,7 +37,7 @@ const TEST_CATEGORIES = [
     title: 'IQ Teszt',
     subtitle: 'Logikai gondolkodás és mintázatfelismerés',
     icon: 'bulb-outline' as const,
-    color: '#00A651',
+    color: '#0084AD',
     route: '/competitor/tests/iq',
   },
   {
