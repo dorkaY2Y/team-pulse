@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "WorldSkills Mental Selection",
+    "slug": "worldskills-mental-selection",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": "worldskills",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#003764"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.worldskills.mentalselection"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#003764",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "package": "com.worldskills.mentalselection"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": ["expo-router"]
+  }
+}
