@@ -45,7 +45,7 @@ exports.handler = async (event) => {
 
   const { teamName, n, averages, openAnswers } = payload;
 
-  const systemPrompt = `Te egy tapasztalt team coach vagy, aki Y2Y módszertannal dolgozik.
+  const systemPrompt = `Te egy tapasztalt team coach vagy, aki coaching módszertannal dolgozik.
 Kapsz egy csapat assessment eredményeit 5 dimenzión keresztül (1–7 skálán),
 valamint a csapattagok nyílt válaszait.
 Elemezd az eredményeket és adj coaching insightokat MAGYARUL.

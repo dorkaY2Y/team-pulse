@@ -1,4 +1,4 @@
--- Team Pulse by Y2Y – Supabase Schema
+-- Team Pulse – Supabase Schema
 -- Run this in the Supabase SQL Editor
 
 -- Table: teams

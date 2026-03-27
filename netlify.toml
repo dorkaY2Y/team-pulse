@@ -1,4 +1,4 @@
-# netlify.toml – Team Pulse by Y2Y
+# netlify.toml – Team Pulse
 
 [build]
   publish = "."

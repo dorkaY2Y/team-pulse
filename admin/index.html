@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Belépés – Team Pulse by Y2Y</title>
+  <title>Belépés – Team Pulse</title>
   <link href="https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/style.css">
 </head>
@@ -13,7 +13,7 @@
   <div class="login-panel fade-up">
 
     <div style="margin-bottom:6px;">
-      <span class="y2y-badge">Y2Y</span>
+      
     </div>
 
     <div class="login-display">TEAM<br><em>PULSE</em></div>
@@ -30,7 +30,7 @@
     <div class="login-error" id="loginError">Hibás jelszó – próbáld újra.</div>
 
     <div style="margin-top:40px;padding-top:20px;border-top:1px solid var(--border);font-size:0.72rem;color:var(--muted);text-align:center;letter-spacing:0.06em;">
-      Y2Y Facilitátor &nbsp;·&nbsp; ICF PCC
+      Facilitátor &nbsp;·&nbsp; ICF PCC
     </div>
   </div>
 </div>
@@ -42,7 +42,7 @@
 
   function login() {
     const pw = document.getElementById('passwordInput').value;
-    const correct = typeof CONFIG !== 'undefined' ? CONFIG.ADMIN_PASSWORD : 'y2y2024';
+    const correct = typeof CONFIG !== 'undefined' ? CONFIG.ADMIN_PASSWORD : 'admin2024';
     if (pw === correct) {
       sessionStorage.setItem('tp_admin', 'true');
       window.location.href = 'dashboard.html';

@@ -1,4 +1,4 @@
-/* Team Pulse by Y2Y – Global Styles (UP2DATE-inspired editorial design) */
+/* Team Pulse – Global Styles (UP2DATE-inspired editorial design) */
 
 @import url('https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,700&display=swap');
 
@@ -73,8 +73,8 @@ a:hover { opacity: 0.8; }
 
 .top-bar a:hover { color: var(--yellow); opacity: 1; }
 
-/* ─── Y2Y Badge ──────────────────────────────────────── */
-.y2y-badge {
+/* ─── Badge ──────────────────────────────────────── */
+.badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
