@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { getLocalProfile, clearLocalProfile, LocalProfile } from '../../lib/storage';
-import { getMyResults, TestResult } from '../../lib/results';
+import { getMyResults, clearLocalResults, TestResult } from '../../lib/results';
 import { Button } from '../../components/Button';
 import { theme } from '../../lib/theme';
 
@@ -21,7 +21,7 @@ export default function ProfileScreen() {
   function handleReset() {
     Alert.alert(
       'Profil törlése',
-      'Biztosan törölni szeretnéd a profilod? Visszakerülsz a kezdőoldalra.',
+      'Biztosan törölni szeretnéd a profilod és az összes eredményed? Visszakerülsz a kezdőoldalra.',
       [
         { text: 'Mégsem', style: 'cancel' },
         {
@@ -29,6 +29,7 @@ export default function ProfileScreen() {
           style: 'destructive',
           onPress: async () => {
             await clearLocalProfile();
+            await clearLocalResults();
             router.replace('/onboarding');
           },
         },

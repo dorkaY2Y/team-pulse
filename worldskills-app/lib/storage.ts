@@ -14,9 +14,13 @@ export async function saveLocalProfile(profile: LocalProfile): Promise<void> {
 }
 
 export async function getLocalProfile(): Promise<LocalProfile | null> {
-  const data = await AsyncStorage.getItem(PROFILE_KEY);
-  if (!data) return null;
-  return JSON.parse(data);
+  try {
+    const data = await AsyncStorage.getItem(PROFILE_KEY);
+    if (!data) return null;
+    return JSON.parse(data);
+  } catch {
+    return null;
+  }
 }
 
 export async function clearLocalProfile(): Promise<void> {

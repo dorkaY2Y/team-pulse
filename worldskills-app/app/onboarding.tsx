@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View, Text, StyleSheet, TextInput, TouchableOpacity,
   ScrollView, KeyboardAvoidingView, Platform, Alert,
@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { WORLDSKILLS_SKILLS, WorldSkillsSkill } from '../lib/skills';
-import { saveLocalProfile } from '../lib/storage';
+import { saveLocalProfile, getLocalProfile } from '../lib/storage';
 import { Button } from '../components/Button';
 import { theme } from '../lib/theme';
 
@@ -16,6 +16,17 @@ export default function OnboardingScreen() {
   const [name, setName] = useState('');
   const [selectedSkill, setSelectedSkill] = useState<WorldSkillsSkill | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    getLocalProfile().then((profile) => {
+      if (profile?.setupComplete) {
+        setName(profile.name);
+        setSelectedSkill(profile.skill);
+        setIsEditing(true);
+      }
+    });
+  }, []);
 
   const filteredSkills = WORLDSKILLS_SKILLS.filter((s) =>
     s.toLowerCase().includes(searchQuery.toLowerCase())
@@ -134,7 +145,7 @@ export default function OnboardingScreen() {
 
           <View style={styles.buttonContainer}>
             <Button
-              title="Tovább"
+              title={isEditing ? 'Mentés' : 'Tovább'}
               onPress={handleStart}
               disabled={!name.trim() || !selectedSkill}
             />

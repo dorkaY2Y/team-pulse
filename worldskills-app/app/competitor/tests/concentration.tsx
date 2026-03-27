@@ -74,6 +74,7 @@ export default function ConcentrationScreen() {
     return () => {
       if (schulteInterval.current) clearInterval(schulteInterval.current);
       if (huntInterval.current) clearInterval(huntInterval.current);
+      if (reactionTimeout.current) clearTimeout(reactionTimeout.current);
     };
   }, []);
 
