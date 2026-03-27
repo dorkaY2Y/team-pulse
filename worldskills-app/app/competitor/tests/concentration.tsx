@@ -3,8 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '../../../lib/auth-context';
-import { supabase } from '../../../lib/supabase';
+import { saveResult } from '../../../lib/results';
 import { Button } from '../../../components/Button';
 import { theme } from '../../../lib/theme';
 
@@ -21,7 +20,7 @@ const STROOP_COLORS = [
 
 export default function ConcentrationScreen() {
   const router = useRouter();
-  const { session } = useAuth();
+
   const [gameState, setGameState] = useState<GameState>('menu');
   const [testType, setTestType] = useState<ConcentrationTest>('stroop');
   const [score, setScore] = useState(0);
@@ -195,16 +194,8 @@ export default function ConcentrationScreen() {
     setScore(finalScore);
     setGameState('result');
 
-    if (session?.user) {
-      await supabase.from('test_results').insert({
-        user_id: session.user.id,
-        test_id: null,
-        score: finalScore,
-        max_score: maxScore,
-        percentage: Math.round((finalScore / maxScore) * 100),
-        time_taken_seconds: timeTaken,
-      });
-    }
+    const subtype = testType === 'stroop' ? 'concentration_stroop' : testType === 'sequence' ? 'concentration_sequence' : 'concentration_reaction';
+    await saveResult(subtype as any, `Koncentráció - ${testType}`, finalScore, maxScore, timeTaken);
   }
 
   // ---- RENDER ----

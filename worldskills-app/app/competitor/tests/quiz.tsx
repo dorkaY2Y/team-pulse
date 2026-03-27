@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '../../../lib/auth-context';
+import { saveResult } from '../../../lib/results';
 import { supabase } from '../../../lib/supabase';
 import { Button } from '../../../components/Button';
 import { theme } from '../../../lib/theme';
@@ -72,7 +72,7 @@ const DEMO_QUESTIONS: QuizQuestion[] = [
 
 export default function QuizScreen() {
   const router = useRouter();
-  const { session } = useAuth();
+
   const [gameState, setGameState] = useState<GameState>('menu');
   const [questions, setQuestions] = useState<QuizQuestion[]>(DEMO_QUESTIONS);
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -164,16 +164,7 @@ export default function QuizScreen() {
     setTimerActive(false);
     setGameState('result');
 
-    if (session?.user) {
-      await supabase.from('test_results').insert({
-        user_id: session.user.id,
-        test_id: null,
-        score,
-        max_score: questions.length,
-        percentage: Math.round((score / questions.length) * 100),
-        time_taken_seconds: timeTaken,
-      });
-    }
+    await saveResult('iq', 'Feleletválasztós', score, questions.length, timeTaken);
   }
 
   if (gameState === 'loading') {

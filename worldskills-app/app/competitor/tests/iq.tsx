@@ -3,8 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '../../../lib/auth-context';
-import { supabase } from '../../../lib/supabase';
+import { saveResult } from '../../../lib/results';
 import { Button } from '../../../components/Button';
 import { theme } from '../../../lib/theme';
 
@@ -378,7 +377,7 @@ const miniGridStyles = StyleSheet.create({
 
 export default function IQTestScreen() {
   const router = useRouter();
-  const { session } = useAuth();
+
   const [gameState, setGameState] = useState<GameState>('menu');
   const [questions, setQuestions] = useState<MatrixQuestion[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -443,16 +442,7 @@ export default function IQTestScreen() {
 
     const timeTaken = Math.round((Date.now() - startTime) / 1000);
 
-    if (session?.user) {
-      await supabase.from('test_results').insert({
-        user_id: session.user.id,
-        test_id: null,
-        score: s,
-        max_score: questions.length,
-        percentage: Math.round((s / questions.length) * 100),
-        time_taken_seconds: timeTaken,
-      });
-    }
+    await saveResult('iq', 'IQ Teszt', s, questions.length, timeTaken);
   }
 
   function formatTime(seconds: number): string {

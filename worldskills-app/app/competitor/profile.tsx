@@ -71,6 +71,11 @@ export default function ProfileScreen() {
 
         <View style={styles.actions}>
           <Button
+            title="Admin felület (eredmények)"
+            onPress={() => router.push('/admin')}
+            variant="primary"
+          />
+          <Button
             title="Profil módosítása"
             onPress={() => router.push('/onboarding')}
             variant="outline"

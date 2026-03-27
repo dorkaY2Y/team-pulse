@@ -3,8 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'rea
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '../../../lib/auth-context';
-import { supabase } from '../../../lib/supabase';
+import { saveResult } from '../../../lib/results';
 import { Button } from '../../../components/Button';
 import { theme } from '../../../lib/theme';
 
@@ -73,7 +72,7 @@ function generateGrid(size: number, targetRatio: number = 0.25): { items: GridIt
 
 export default function AttentionScreen() {
   const router = useRouter();
-  const { session } = useAuth();
+
   const [gameState, setGameState] = useState<GameState>('menu');
   const [grid, setGrid] = useState<GridItem[]>([]);
   const [targets, setTargets] = useState<string[]>([]);
@@ -159,17 +158,7 @@ export default function AttentionScreen() {
     setResults(resultData);
     setGameState('result');
 
-    if (session?.user) {
-      supabase.from('test_results').insert({
-        user_id: session.user.id,
-        test_id: null,
-        score: correct,
-        max_score: totalTargets,
-        percentage: tPercent,
-        time_taken_seconds: 300 - timeLeft,
-        answers: resultData,
-      });
-    }
+    saveResult('attention', 'Figyelem Teszt', correct, totalTargets, 300 - timeLeft, resultData);
   }
 
   function formatTime(seconds: number): string {

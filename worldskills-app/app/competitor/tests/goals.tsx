@@ -3,8 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '../../../lib/auth-context';
-import { supabase } from '../../../lib/supabase';
+import { saveResult } from '../../../lib/results';
 import { Button } from '../../../components/Button';
 import { theme } from '../../../lib/theme';
 
@@ -46,7 +45,7 @@ interface Answer {
 
 export default function GoalsScreen() {
   const router = useRouter();
-  const { session } = useAuth();
+
   const [gameState, setGameState] = useState<GameState>('menu');
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
@@ -112,19 +111,11 @@ export default function GoalsScreen() {
     setResults({ comparative: comparativeAvg, mastery: masteryAvg, interpretation });
     setGameState('result');
 
-    if (session?.user) {
-      const totalScore = comparativeSum + masterySum;
-      const maxScore = GOAL_QUESTIONS.length * 5;
-      supabase.from('test_results').insert({
-        user_id: session.user.id,
-        test_id: null,
-        score: totalScore,
-        max_score: maxScore,
-        percentage: Math.round((totalScore / maxScore) * 100),
-        time_taken_seconds: null,
-        answers: { comparativeAvg, masteryAvg, raw: allAnswers },
-      });
-    }
+    const totalScore = comparativeSum + masterySum;
+    const maxScore = GOAL_QUESTIONS.length * 5;
+    saveResult('goals', 'Célorientáció', totalScore, maxScore, null, {
+      comparativeAvg, masteryAvg, answers: allAnswers,
+    });
   }
 
   if (gameState === 'menu') {
