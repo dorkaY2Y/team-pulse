@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', gap: theme.spacing.sm, marginBottom: theme.spacing.lg,
   },
   summaryCard: {
-    flex: 1, backgroundColor: theme.colors.primary, borderRadius: theme.borderRadius.lg,
+    flex: 1, backgroundColor: theme.colors.navy, borderRadius: theme.borderRadius.md,
     paddingVertical: theme.spacing.md, alignItems: 'center', ...theme.shadows.md,
   },
   summaryValue: { fontSize: theme.fontSizes.xl, fontWeight: '900', color: theme.colors.white },

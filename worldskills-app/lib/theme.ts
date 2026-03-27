@@ -1,31 +1,33 @@
 // WorldSkills Official Brand Design System
-// Colors from: https://worldskills.org/brand/visual-identity/
+// Based on https://worldskills.org/ live site analysis
+// Primary CTA: Magenta, Secondary: Purple, Brand: Navy
 export const theme = {
   colors: {
     // Primary WorldSkills colors
-    primary: '#003764',       // WorldSkills Dark Blue (Navy) - logo color
-    primaryDark: '#002647',   // Darker navy for pressed states
-    primaryLight: '#0077C8',  // Lighter blue for highlights
+    primary: '#D51067',       // Magenta - primary CTA (buttons, links)
+    primaryDark: '#b10d56',   // Hover state
+    secondary: '#4A0D66',     // Purple - secondary, active states
+    navy: '#003764',          // Dark Blue - brand, headers, backgrounds
 
     // WorldSkills brand palette
-    yellow: '#FEE300',        // Pantone 102C
-    magenta: '#D51067',       // Pantone 214C
-    cyan: '#72D0EB',          // Pantone 0821C
-    orange: '#FF6C0C',        // Pantone 1585C
-    purple: '#4A0D66',        // Pantone 2617C
-    teal: '#0084AD',          // Pantone 7704C
-    mint: '#8AE2D1',          // Pantone 332C
+    yellow: '#FEE300',
+    magenta: '#D51067',
+    cyan: '#72D0EB',
+    orange: '#FF6C0C',
+    purple: '#4A0D66',
+    teal: '#0084AD',
+    mint: '#8AE2D1',
 
-    // Accent - magenta used for CTAs and highlights
+    // Accent
     accent: '#D51067',
 
-    // Neutrals
-    black: '#1A1A1A',
-    darkGray: '#333333',
-    gray: '#666666',
-    mediumGray: '#999999',
-    lightGray: '#E5E5E5',
-    background: '#F5F5F5',
+    // Neutrals (from worldskills.org CSS)
+    black: '#2d2d2d',
+    darkGray: '#434343',
+    gray: '#5a5a5a',
+    mediumGray: '#acacac',
+    lightGray: '#e8e8e8',
+    background: '#f7f7f7',
     white: '#FFFFFF',
 
     // Functional
@@ -36,7 +38,7 @@ export const theme = {
 
     // Card & surface
     card: '#FFFFFF',
-    cardBorder: '#E0E0E0',
+    cardBorder: '#d7d7d7',
     overlay: 'rgba(0, 0, 0, 0.5)',
   },
 
@@ -65,10 +67,10 @@ export const theme = {
   },
 
   borderRadius: {
-    sm: 8,
-    md: 12,
-    lg: 16,
-    xl: 24,
+    sm: 2,         // WorldSkills: near-sharp edges
+    md: 4,
+    lg: 6,
+    xl: 8,
     full: 999,
   },
 
@@ -76,23 +78,23 @@ export const theme = {
     sm: {
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.1,
+      shadowOpacity: 0.05,
       shadowRadius: 2,
-      elevation: 2,
+      elevation: 1,
     },
     md: {
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.15,
-      shadowRadius: 6,
-      elevation: 4,
+      shadowOpacity: 0.08,
+      shadowRadius: 4,
+      elevation: 2,
     },
     lg: {
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.2,
-      shadowRadius: 12,
-      elevation: 8,
+      shadowOpacity: 0.12,
+      shadowRadius: 8,
+      elevation: 4,
     },
   },
 } as const;

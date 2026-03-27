@@ -8,7 +8,7 @@ export default function CompetitorLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: theme.colors.primary,
+        tabBarActiveTintColor: theme.colors.navy,
         tabBarInactiveTintColor: theme.colors.mediumGray,
         tabBarStyle: {
           backgroundColor: theme.colors.white,

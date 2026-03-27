@@ -2,7 +2,8 @@ import { theme } from '../lib/theme';
 
 describe('WorldSkills téma', () => {
   test('Hivatalos brand színek megvannak', () => {
-    expect(theme.colors.primary).toBe('#003764');
+    expect(theme.colors.primary).toBe('#D51067');
+    expect(theme.colors.navy).toBe('#003764');
     expect(theme.colors.magenta).toBe('#D51067');
     expect(theme.colors.yellow).toBe('#FEE300');
     expect(theme.colors.teal).toBe('#0084AD');

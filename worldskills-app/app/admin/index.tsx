@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.background },
   // Header
   header: {
-    backgroundColor: theme.colors.primary, paddingHorizontal: theme.spacing.lg,
+    backgroundColor: theme.colors.navy, paddingHorizontal: theme.spacing.lg,
     paddingTop: theme.spacing.sm, paddingBottom: theme.spacing.lg,
     borderBottomLeftRadius: theme.borderRadius.xl, borderBottomRightRadius: theme.borderRadius.xl,
   },
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing.sm, borderRadius: theme.borderRadius.md,
     backgroundColor: theme.colors.card, borderWidth: 1.5, borderColor: theme.colors.lightGray,
   },
-  sourceBtnActive: { backgroundColor: theme.colors.primary, borderColor: theme.colors.primary },
+  sourceBtnActive: { backgroundColor: theme.colors.navy, borderColor: theme.colors.navy },
   sourceBtnText: { fontSize: theme.fontSizes.sm, fontWeight: '600', color: theme.colors.gray },
   sourceBtnTextActive: { color: theme.colors.white },
   // Skill section
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing.md, paddingVertical: theme.spacing.sm, borderRadius: theme.borderRadius.full,
     backgroundColor: theme.colors.card, borderWidth: 1.5, borderColor: theme.colors.lightGray,
   },
-  skillChipActive: { backgroundColor: theme.colors.primary, borderColor: theme.colors.primary },
+  skillChipActive: { backgroundColor: theme.colors.navy, borderColor: theme.colors.navy },
   skillChipText: { fontSize: theme.fontSizes.sm, color: theme.colors.gray },
   skillChipTextActive: { color: theme.colors.white, fontWeight: '700' },
   // Stats
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
     paddingBottom: theme.spacing.sm, borderBottomWidth: 1, borderBottomColor: theme.colors.lightGray,
   },
   personAvatar: {
-    width: 40, height: 40, borderRadius: 20, backgroundColor: theme.colors.primary,
+    width: 40, height: 40, borderRadius: 20, backgroundColor: theme.colors.navy,
     alignItems: 'center', justifyContent: 'center', marginRight: theme.spacing.md,
   },
   personAvatarText: { color: theme.colors.white, fontWeight: '700', fontSize: theme.fontSizes.md },

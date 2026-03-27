@@ -162,10 +162,10 @@ const styles = StyleSheet.create({
   // Hero
   hero: { alignItems: 'center', marginBottom: theme.spacing.xl },
   logoStar: {
-    width: 60, height: 60, borderRadius: 30, backgroundColor: theme.colors.primary,
+    width: 60, height: 60, borderRadius: 30, backgroundColor: theme.colors.navy,
     alignItems: 'center', justifyContent: 'center', marginBottom: theme.spacing.md, ...theme.shadows.md,
   },
-  title: { fontSize: theme.fontSizes.xxl, fontWeight: '800', color: theme.colors.primary, letterSpacing: -0.5 },
+  title: { fontSize: theme.fontSizes.xxl, fontWeight: '800', color: theme.colors.navy, letterSpacing: -0.5 },
   subtitle: { fontSize: theme.fontSizes.md, color: theme.colors.gray, marginTop: 2 },
   description: {
     fontSize: theme.fontSizes.sm, color: theme.colors.gray, textAlign: 'center',
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
   // Sections
   section: { marginBottom: theme.spacing.lg },
   stepBadge: {
-    width: 28, height: 28, borderRadius: 14, backgroundColor: theme.colors.primary,
+    width: 28, height: 28, borderRadius: 14, backgroundColor: theme.colors.navy,
     alignItems: 'center', justifyContent: 'center', marginBottom: theme.spacing.sm,
   },
   stepNumber: { color: theme.colors.white, fontSize: theme.fontSizes.sm, fontWeight: '800' },

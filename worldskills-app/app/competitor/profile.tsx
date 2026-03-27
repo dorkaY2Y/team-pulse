@@ -150,7 +150,7 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.background },
   header: {
-    backgroundColor: theme.colors.primary, alignItems: 'center',
+    backgroundColor: theme.colors.navy, alignItems: 'center',
     paddingTop: theme.spacing.xl, paddingBottom: theme.spacing.lg,
   },
   avatarRing: {

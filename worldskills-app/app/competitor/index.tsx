@@ -166,12 +166,10 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.background },
   // Header
   header: {
-    backgroundColor: theme.colors.primary,
+    backgroundColor: theme.colors.navy,
     paddingHorizontal: theme.spacing.lg,
     paddingTop: theme.spacing.lg,
     paddingBottom: theme.spacing.lg,
-    borderBottomLeftRadius: theme.borderRadius.xl,
-    borderBottomRightRadius: theme.borderRadius.xl,
   },
   headerTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   greeting: { fontSize: theme.fontSizes.sm, color: 'rgba(255,255,255,0.6)' },
@@ -192,10 +190,9 @@ const styles = StyleSheet.create({
   actionSection: { padding: theme.spacing.md, gap: theme.spacing.sm },
   // Selection card (primary CTA)
   selectionCard: {
-    backgroundColor: theme.colors.primary,
-    borderRadius: theme.borderRadius.lg,
+    backgroundColor: theme.colors.navy,
+    borderRadius: theme.borderRadius.md,
     padding: theme.spacing.lg,
-    ...theme.shadows.lg,
   },
   selectionBadge: {
     backgroundColor: theme.colors.magenta,

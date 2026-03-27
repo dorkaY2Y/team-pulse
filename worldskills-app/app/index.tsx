@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: theme.colors.primary,
+    backgroundColor: theme.colors.navy,
   },
   logoContainer: {
     alignItems: 'center',
