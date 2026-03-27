@@ -53,15 +53,6 @@ const TESTS = [
     route: '/competitor/tests/goals',
     duration: '3 perc',
   },
-  {
-    id: 'quiz',
-    title: 'WorldSkills Kvíz',
-    subtitle: 'Feleletválasztós tudásfelmérő',
-    icon: 'help-circle-outline' as const,
-    color: '#003764',
-    route: '/competitor/tests/quiz',
-    duration: '~5 perc',
-  },
 ];
 
 export default function CompetitorDashboard() {
