@@ -164,7 +164,7 @@ export default function QuizScreen() {
     setTimerActive(false);
     setGameState('result');
 
-    await saveResult('iq', 'Feleletválasztós', score, questions.length, timeTaken);
+    await saveResult('quiz' as any, 'WorldSkills Kvíz', score, questions.length, timeTaken);
   }
 
   if (gameState === 'loading') {
@@ -185,15 +185,16 @@ export default function QuizScreen() {
           <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
             <Ionicons name="arrow-back" size={24} color={theme.colors.black} />
           </TouchableOpacity>
-          <Text style={styles.menuTitle}>Feleletválasztós</Text>
+          <Text style={styles.menuTitle}>WorldSkills Kvíz</Text>
         </View>
 
-        <View style={styles.menuContent}>
+        <ScrollView contentContainerStyle={styles.menuContent}>
           <View style={styles.menuIcon}>
-            <Ionicons name="list-outline" size={64} color={theme.colors.primary} />
+            <Ionicons name="help-circle-outline" size={64} color={theme.colors.primary} />
           </View>
+          <Text style={styles.menuMainTitle}>Feleletválasztós Kvíz</Text>
           <Text style={styles.menuDesc}>
-            Tudásfelmérő kérdéssor a tesztbankból. Minden kérdésre 30 másodperced van.
+            Tudásfelmérő kérdéssor a WorldSkills versenyekről. Minden kérdésre 30 másodperced van válaszolni.
           </Text>
           <Text style={styles.menuInfo}>
             {questions.length} kérdés • 30 mp/kérdés
@@ -203,7 +204,7 @@ export default function QuizScreen() {
             onPress={loadQuestions}
             style={{ marginTop: theme.spacing.lg }}
           />
-        </View>
+        </ScrollView>
       </SafeAreaView>
     );
   }
@@ -334,9 +335,7 @@ const styles = StyleSheet.create({
     color: theme.colors.black,
   },
   menuContent: {
-    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
     padding: theme.spacing.xl,
   },
   menuIcon: {
@@ -347,6 +346,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: theme.spacing.lg,
+  },
+  menuMainTitle: {
+    fontSize: theme.fontSizes.xxl,
+    fontWeight: '800',
+    color: theme.colors.black,
+    marginBottom: theme.spacing.md,
   },
   menuDesc: {
     fontSize: theme.fontSizes.md,

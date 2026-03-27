@@ -29,7 +29,7 @@ const TESTS = [
   {
     id: 'concentration',
     title: 'Koncentráció',
-    subtitle: 'Stroop, memória, reakcióidő',
+    subtitle: 'Stroop, memória, reakcióidő + gyakorlás',
     icon: 'eye-outline' as const,
     color: '#72D0EB',
     route: '/competitor/tests/concentration',
@@ -52,6 +52,15 @@ const TESTS = [
     color: '#FF6C0C',
     route: '/competitor/tests/goals',
     duration: '3 perc',
+  },
+  {
+    id: 'quiz',
+    title: 'WorldSkills Kvíz',
+    subtitle: 'Feleletválasztós tudásfelmérő',
+    icon: 'help-circle-outline' as const,
+    color: '#003764',
+    route: '/competitor/tests/quiz',
+    duration: '~5 perc',
   },
 ];
 

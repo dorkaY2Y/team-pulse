@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { View, ScrollView, StyleSheet, Text, RefreshControl, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
-import { Header } from '../../components/Header';
 import { getLocalResults, getAllResultsFromSupabase, TestResult } from '../../lib/results';
 import { theme } from '../../lib/theme';
 
@@ -14,6 +14,7 @@ function getScoreColor(pct: number): string {
 }
 
 export default function AdminDashboard() {
+  const router = useRouter();
   const [results, setResults] = useState<TestResult[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
@@ -68,11 +69,17 @@ export default function AdminDashboard() {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.colors.primary} />}
       >
         <View style={styles.header}>
-          <View style={styles.adminBadge}>
-            <Ionicons name="shield-checkmark" size={16} color={theme.colors.primary} />
-            <Text style={styles.adminBadgeText}>Admin</Text>
+          <View style={styles.headerTop}>
+            <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+              <Ionicons name="arrow-back" size={22} color={theme.colors.white} />
+            </TouchableOpacity>
+            <View style={styles.adminBadge}>
+              <Ionicons name="shield-checkmark" size={14} color={theme.colors.white} />
+              <Text style={styles.adminBadgeText}>Admin</Text>
+            </View>
           </View>
           <Text style={styles.headerTitle}>Eredmények</Text>
+          <Text style={styles.headerSubtitle}>Összes versenyző teljesítménye</Text>
         </View>
 
         {/* Source toggle */}
@@ -135,8 +142,11 @@ export default function AdminDashboard() {
         <View style={styles.resultsList}>
           {Object.entries(byPerson).length === 0 ? (
             <View style={styles.empty}>
-              <Ionicons name="people-outline" size={48} color={theme.colors.lightGray} />
-              <Text style={styles.emptyText}>Még nincs eredmény</Text>
+              <View style={styles.emptyIcon}>
+                <Ionicons name="people-outline" size={40} color={theme.colors.primary} />
+              </View>
+              <Text style={styles.emptyTitle}>Még nincs eredmény</Text>
+              <Text style={styles.emptyText}>Ha a versenyzők kitöltik a teszteket, itt fogod látni az eredményeiket.</Text>
             </View>
           ) : (
             Object.entries(byPerson).map(([name, personResults]) => {
@@ -184,12 +194,21 @@ export default function AdminDashboard() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.background },
   header: {
-    backgroundColor: theme.colors.white, padding: theme.spacing.lg,
-    borderBottomWidth: 1, borderBottomColor: theme.colors.lightGray,
+    backgroundColor: theme.colors.primary, paddingHorizontal: theme.spacing.lg,
+    paddingTop: theme.spacing.sm, paddingBottom: theme.spacing.lg,
+    borderBottomLeftRadius: theme.borderRadius.xl,
+    borderBottomRightRadius: theme.borderRadius.xl,
   },
-  adminBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: theme.spacing.xs },
-  adminBadgeText: { fontSize: theme.fontSizes.xs, fontWeight: '700', color: theme.colors.primary, textTransform: 'uppercase', letterSpacing: 1 },
-  headerTitle: { fontSize: theme.fontSizes.xxl, fontWeight: '800', color: theme.colors.black },
+  headerTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: theme.spacing.md },
+  backBtn: { padding: theme.spacing.xs },
+  adminBadge: {
+    flexDirection: 'row', alignItems: 'center', gap: 4,
+    backgroundColor: 'rgba(255,255,255,0.15)', paddingHorizontal: theme.spacing.sm,
+    paddingVertical: 4, borderRadius: theme.borderRadius.full,
+  },
+  adminBadgeText: { fontSize: theme.fontSizes.xs, fontWeight: '700', color: theme.colors.white, textTransform: 'uppercase', letterSpacing: 1 },
+  headerTitle: { fontSize: theme.fontSizes.xxl, fontWeight: '800', color: theme.colors.white },
+  headerSubtitle: { fontSize: theme.fontSizes.sm, color: 'rgba(255,255,255,0.6)', marginTop: 2 },
   // Source toggle
   sourceRow: { flexDirection: 'row', padding: theme.spacing.md, gap: theme.spacing.sm },
   sourceBtn: {
@@ -216,8 +235,13 @@ const styles = StyleSheet.create({
   skillChipText: { fontSize: theme.fontSizes.sm, color: theme.colors.gray },
   skillChipTextActive: { color: theme.colors.white, fontWeight: '700' },
   // Empty
-  empty: { alignItems: 'center', paddingVertical: theme.spacing.xxl },
-  emptyText: { color: theme.colors.gray, fontSize: theme.fontSizes.md, marginTop: theme.spacing.md },
+  empty: { alignItems: 'center', paddingVertical: theme.spacing.xxl, paddingHorizontal: theme.spacing.xl },
+  emptyIcon: {
+    width: 72, height: 72, borderRadius: 36, backgroundColor: theme.colors.primary + '12',
+    alignItems: 'center', justifyContent: 'center', marginBottom: theme.spacing.md,
+  },
+  emptyTitle: { fontSize: theme.fontSizes.lg, fontWeight: '700', color: theme.colors.black, marginBottom: theme.spacing.xs },
+  emptyText: { color: theme.colors.gray, fontSize: theme.fontSizes.sm, textAlign: 'center', lineHeight: 22 },
   // Results list
   resultsList: { paddingHorizontal: theme.spacing.md, paddingBottom: theme.spacing.xxl },
   personCard: {

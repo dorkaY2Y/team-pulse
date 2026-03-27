@@ -18,6 +18,7 @@ const TEST_ICONS: Record<string, { icon: keyof typeof Ionicons.glyphMap; color: 
   concentration_numberHunt: { icon: 'search-outline', color: '#4A0D66' },
   mindset: { icon: 'analytics-outline', color: '#4A0D66' },
   goals: { icon: 'flag-outline', color: '#FF6C0C' },
+  quiz: { icon: 'help-circle-outline', color: '#003764' },
 };
 
 function getScoreColor(pct: number): string {
