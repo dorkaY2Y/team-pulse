@@ -70,9 +70,15 @@ export default function CompetitorDashboard() {
         {/* Header with name + skill */}
         <View style={styles.header}>
           <View style={styles.headerTop}>
-            <View>
+            <View style={{ flex: 1 }}>
               <Text style={styles.greeting}>Üdvözlünk!</Text>
               <Text style={styles.name}>{profile?.name || 'Versenyző'}</Text>
+              {profile?.skill && (
+                <View style={styles.skillBadge}>
+                  <Ionicons name="construct-outline" size={12} color="rgba(255,255,255,0.8)" />
+                  <Text style={styles.skillText}>{profile.skill}</Text>
+                </View>
+              )}
             </View>
             <View style={styles.avatar}>
               <Text style={styles.avatarText}>
@@ -80,12 +86,6 @@ export default function CompetitorDashboard() {
               </Text>
             </View>
           </View>
-          {profile?.skill && (
-            <View style={styles.skillBadge}>
-              <Ionicons name="construct-outline" size={14} color={theme.colors.primary} />
-              <Text style={styles.skillText}>{profile.skill}</Text>
-            </View>
-          )}
         </View>
 
         {/* Two mode cards */}
@@ -152,10 +152,12 @@ const styles = StyleSheet.create({
   },
   // Header
   header: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.primary,
     paddingHorizontal: theme.spacing.lg,
     paddingTop: theme.spacing.lg,
-    paddingBottom: theme.spacing.md,
+    paddingBottom: theme.spacing.lg,
+    borderBottomLeftRadius: theme.borderRadius.xl,
+    borderBottomRightRadius: theme.borderRadius.xl,
   },
   headerTop: {
     flexDirection: 'row',
@@ -164,19 +166,19 @@ const styles = StyleSheet.create({
   },
   greeting: {
     fontSize: theme.fontSizes.sm,
-    color: theme.colors.gray,
+    color: 'rgba(255,255,255,0.6)',
   },
   name: {
     fontSize: theme.fontSizes.xl,
     fontWeight: '800',
-    color: theme.colors.black,
+    color: theme.colors.white,
     marginTop: 2,
   },
   avatar: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: theme.colors.primary,
+    backgroundColor: 'rgba(255,255,255,0.2)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -188,18 +190,18 @@ const styles = StyleSheet.create({
   skillBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    backgroundColor: theme.colors.primary + '10',
+    gap: 5,
+    backgroundColor: 'rgba(255,255,255,0.15)',
     alignSelf: 'flex-start',
     paddingHorizontal: theme.spacing.sm,
-    paddingVertical: theme.spacing.xs,
+    paddingVertical: 4,
     borderRadius: theme.borderRadius.full,
     marginTop: theme.spacing.sm,
   },
   skillText: {
     fontSize: theme.fontSizes.xs,
-    fontWeight: '700',
-    color: theme.colors.primary,
+    fontWeight: '600',
+    color: 'rgba(255,255,255,0.8)',
   },
   // Mode cards
   modeSection: {

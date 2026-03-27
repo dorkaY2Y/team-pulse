@@ -13,6 +13,9 @@ const TEST_ICONS: Record<string, { icon: keyof typeof Ionicons.glyphMap; color: 
   concentration_stroop: { icon: 'color-palette-outline', color: '#0077C8' },
   concentration_sequence: { icon: 'grid-outline', color: '#0077C8' },
   concentration_reaction: { icon: 'flash-outline', color: '#D51067' },
+  concentration_schulte: { icon: 'apps-outline', color: '#0084AD' },
+  concentration_pairs: { icon: 'copy-outline', color: '#FF6C0C' },
+  concentration_numberHunt: { icon: 'search-outline', color: '#4A0D66' },
   mindset: { icon: 'analytics-outline', color: '#4A0D66' },
   goals: { icon: 'flag-outline', color: '#FF6C0C' },
 };
@@ -50,12 +53,35 @@ export default function ResultsScreen() {
 
         {results.length === 0 ? (
           <View style={styles.empty}>
-            <Ionicons name="document-text-outline" size={64} color={theme.colors.lightGray} />
+            <View style={styles.emptyIcon}>
+              <Ionicons name="clipboard-outline" size={48} color={theme.colors.primary} />
+            </View>
             <Text style={styles.emptyTitle}>Még nincs eredményed</Text>
-            <Text style={styles.emptySubtitle}>Töltsd ki az első tesztedet!</Text>
+            <Text style={styles.emptySubtitle}>
+              Töltsd ki az első tesztedet, és itt fogod{'\n'}látni az összes korábbi eredményedet!
+            </Text>
           </View>
         ) : (
           <View style={styles.list}>
+            {/* Summary stats */}
+            <View style={styles.summaryRow}>
+              <View style={styles.summaryCard}>
+                <Text style={styles.summaryValue}>{results.length}</Text>
+                <Text style={styles.summaryLabel}>teszt</Text>
+              </View>
+              <View style={styles.summaryCard}>
+                <Text style={styles.summaryValue}>
+                  {Math.round(results.reduce((s, r) => s + r.percentage, 0) / results.length)}%
+                </Text>
+                <Text style={styles.summaryLabel}>átlag</Text>
+              </View>
+              <View style={styles.summaryCard}>
+                <Text style={styles.summaryValue}>
+                  {Math.max(...results.map((r) => r.percentage))}%
+                </Text>
+                <Text style={styles.summaryLabel}>legjobb</Text>
+              </View>
+            </View>
             {results.map((result) => {
               const testInfo = TEST_ICONS[result.testType] || { icon: 'help-outline' as const, color: theme.colors.gray };
               return (
@@ -103,9 +129,22 @@ export default function ResultsScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.background },
-  empty: { alignItems: 'center', paddingTop: theme.spacing.xxl * 2 },
-  emptyTitle: { fontSize: theme.fontSizes.lg, fontWeight: '700', color: theme.colors.darkGray, marginTop: theme.spacing.md },
-  emptySubtitle: { fontSize: theme.fontSizes.md, color: theme.colors.gray, marginTop: theme.spacing.xs },
+  empty: { alignItems: 'center', paddingTop: theme.spacing.xxl * 2, paddingHorizontal: theme.spacing.xl },
+  emptyIcon: {
+    width: 88, height: 88, borderRadius: 44, backgroundColor: theme.colors.primary + '12',
+    alignItems: 'center', justifyContent: 'center', marginBottom: theme.spacing.md,
+  },
+  emptyTitle: { fontSize: theme.fontSizes.xl, fontWeight: '800', color: theme.colors.black, marginTop: theme.spacing.sm },
+  emptySubtitle: { fontSize: theme.fontSizes.md, color: theme.colors.gray, marginTop: theme.spacing.sm, textAlign: 'center', lineHeight: 22 },
+  summaryRow: {
+    flexDirection: 'row', gap: theme.spacing.sm, marginBottom: theme.spacing.lg,
+  },
+  summaryCard: {
+    flex: 1, backgroundColor: theme.colors.primary, borderRadius: theme.borderRadius.lg,
+    paddingVertical: theme.spacing.md, alignItems: 'center', ...theme.shadows.md,
+  },
+  summaryValue: { fontSize: theme.fontSizes.xl, fontWeight: '900', color: theme.colors.white },
+  summaryLabel: { fontSize: theme.fontSizes.xs, color: 'rgba(255,255,255,0.7)', marginTop: 2 },
   list: { paddingHorizontal: theme.spacing.md, paddingBottom: theme.spacing.xl },
   resultCard: {
     backgroundColor: theme.colors.card, borderRadius: theme.borderRadius.lg,

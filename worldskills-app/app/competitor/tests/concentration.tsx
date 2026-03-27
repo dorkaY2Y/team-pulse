@@ -607,7 +607,10 @@ export default function ConcentrationScreen() {
                 onPress={() => handlePairsTap(i)}
                 disabled={card.matched}
               >
-                <Text style={styles.pairsCardText}>
+                <Text style={[
+                  styles.pairsCardText,
+                  (card.flipped || card.matched) && styles.pairsCardTextFlipped,
+                ]}>
                   {card.flipped || card.matched ? card.symbol : '?'}
                 </Text>
               </TouchableOpacity>
@@ -883,14 +886,14 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.sm,
   },
   schulteGrid: {
-    width: 300,
+    width: 320,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 4,
+    gap: 5,
   },
   schulteCell: {
-    width: 56,
-    height: 56,
+    width: 60,
+    height: 60,
     borderRadius: theme.borderRadius.sm,
     backgroundColor: theme.colors.white,
     alignItems: 'center',
@@ -941,6 +944,9 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: theme.colors.white,
   },
+  pairsCardTextFlipped: {
+    color: theme.colors.primary,
+  },
   // Number hunt
   huntTimer: {
     fontSize: 28,
@@ -965,14 +971,14 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.md,
   },
   huntGrid: {
-    width: 300,
+    width: 320,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 4,
+    gap: 5,
   },
   huntCell: {
-    width: 47,
-    height: 44,
+    width: 50,
+    height: 48,
     borderRadius: theme.borderRadius.sm,
     backgroundColor: theme.colors.white,
     alignItems: 'center',

@@ -51,7 +51,7 @@ export default function OnboardingScreen() {
           <View style={styles.hero}>
             <View style={styles.logoRow}>
               <View style={styles.logoStar}>
-                <Text style={styles.logoStarText}>★</Text>
+                <Ionicons name="star" size={30} color={theme.colors.white} />
               </View>
             </View>
             <Text style={styles.title}>WorldSkills</Text>
@@ -154,16 +154,13 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.md,
   },
   logoStar: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     backgroundColor: theme.colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  logoStarText: {
-    fontSize: 28,
-    color: theme.colors.white,
+    ...theme.shadows.md,
   },
   title: {
     fontSize: theme.fontSizes.xxl,

@@ -13,13 +13,15 @@ export default function CompetitorLayout() {
         tabBarStyle: {
           backgroundColor: theme.colors.white,
           borderTopColor: theme.colors.lightGray,
-          paddingBottom: 6,
-          paddingTop: 6,
-          height: 60,
+          paddingBottom: 8,
+          paddingTop: 8,
+          height: 64,
+          ...theme.shadows.md,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '600',
+          fontSize: 11,
+          fontWeight: '700',
+          letterSpacing: 0.3,
         },
       }}
     >
@@ -50,6 +52,8 @@ export default function CompetitorLayout() {
           ),
         }}
       />
+      <Tabs.Screen name="selection" options={{ href: null }} />
+      <Tabs.Screen name="tests" options={{ href: null }} />
     </Tabs>
   );
 }
