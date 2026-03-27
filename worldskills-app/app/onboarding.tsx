@@ -65,8 +65,8 @@ export default function OnboardingScreen() {
             <View style={styles.stepBadge}>
               <Text style={styles.stepNumber}>1</Text>
             </View>
-            <Text style={styles.label}>Melyik szakmában versenyzői?</Text>
-            <Text style={styles.labelHint}>Válaszd ki a WorldSkills skill-számodat</Text>
+            <Text style={styles.label}>Melyik szakmában versenyzel?</Text>
+            <Text style={styles.labelHint}>Válaszd ki a szakmádat a listából</Text>
 
             <View style={styles.searchContainer}>
               <Ionicons name="search" size={18} color={theme.colors.mediumGray} />

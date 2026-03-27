@@ -67,6 +67,7 @@ const TESTS = [
 export default function CompetitorDashboard() {
   const router = useRouter();
   const [profile, setProfile] = useState<LocalProfile | null>(null);
+  const scrollRef = useRef<ScrollView>(null);
 
   useEffect(() => {
     getLocalProfile().then(setProfile);
@@ -74,7 +75,7 @@ export default function CompetitorDashboard() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView ref={scrollRef} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerTop}>
@@ -135,7 +136,7 @@ export default function CompetitorDashboard() {
           {/* SECONDARY: Gyakorlás */}
           <TouchableOpacity
             style={styles.practiceCard}
-            onPress={() => router.push('#practice' as any)}
+            onPress={() => scrollRef.current?.scrollToEnd({ animated: true })}
             activeOpacity={0.85}
           >
             <View style={styles.practiceLeft}>
