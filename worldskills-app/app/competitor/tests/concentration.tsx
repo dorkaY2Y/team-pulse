@@ -370,8 +370,23 @@ export default function ConcentrationScreen() {
     setScore(finalScore);
     setGameState('result');
 
-    const subtype = testType === 'stroop' ? 'concentration_stroop' : testType === 'sequence' ? 'concentration_sequence' : 'concentration_reaction';
-    await saveResult(subtype as any, `Koncentráció - ${testType}`, finalScore, maxScore, timeTaken);
+    const subtypeMap: Record<ConcentrationTest, string> = {
+      stroop: 'concentration_stroop',
+      sequence: 'concentration_sequence',
+      reaction: 'concentration_reaction',
+      schulte: 'concentration_schulte',
+      pairs: 'concentration_pairs',
+      numberHunt: 'concentration_numberHunt',
+    };
+    const labelMap: Record<ConcentrationTest, string> = {
+      stroop: 'Koncentráció - Stroop',
+      sequence: 'Koncentráció - Számsor memória',
+      reaction: 'Koncentráció - Reakcióidő',
+      schulte: 'Koncentráció - Schulte-táblázat',
+      pairs: 'Koncentráció - Párkereső',
+      numberHunt: 'Koncentráció - Szám-vadász',
+    };
+    await saveResult(subtypeMap[testType] as any, labelMap[testType], finalScore, maxScore, timeTaken);
   }
 
   // ---- RENDER ----
