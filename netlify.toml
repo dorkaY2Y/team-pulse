@@ -7,6 +7,16 @@
 
 # Redirect /survey → /survey.html (clean URLs)
 [[redirects]]
+  from = "/ws"
+  to = "/worldskills-web/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/ws/*"
+  to = "/worldskills-web/index.html"
+  status = 200
+
+[[redirects]]
   from = "/survey"
   to   = "/survey.html"
   status = 200
