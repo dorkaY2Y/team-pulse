@@ -5,17 +5,18 @@
   functions = "netlify/functions"
   command = "node build-config.js"
 
-# Redirect /survey → /survey.html (clean URLs)
+# WorldSkills app SPA routing
 [[redirects]]
   from = "/ws"
-  to = "/worldskills-web/index.html"
+  to = "/ws/index.html"
   status = 200
 
 [[redirects]]
   from = "/ws/*"
-  to = "/worldskills-web/index.html"
+  to = "/ws/index.html"
   status = 200
 
+# Redirect /survey → /survey.html (clean URLs)
 [[redirects]]
   from = "/survey"
   to   = "/survey.html"
