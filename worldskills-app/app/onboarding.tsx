@@ -22,12 +22,12 @@ export default function OnboardingScreen() {
   );
 
   async function handleStart() {
-    if (!name.trim()) {
-      Alert.alert('Hiba', 'Kérlek add meg a neved!');
-      return;
-    }
     if (!selectedSkill) {
       Alert.alert('Hiba', 'Válassz egy szakmát!');
+      return;
+    }
+    if (!name.trim()) {
+      Alert.alert('Hiba', 'Kérlek add meg a neved!');
       return;
     }
 
@@ -49,48 +49,24 @@ export default function OnboardingScreen() {
         <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
           {/* Hero */}
           <View style={styles.hero}>
-            <View style={styles.logoRow}>
-              <View style={styles.logoStar}>
-                <Ionicons name="star" size={30} color={theme.colors.white} />
-              </View>
+            <View style={styles.logoStar}>
+              <Ionicons name="star" size={30} color={theme.colors.white} />
             </View>
             <Text style={styles.title}>WorldSkills</Text>
             <Text style={styles.subtitle}>Mentális Kiválasztás</Text>
-            <View style={styles.descriptionCard}>
-              <Text style={styles.description}>
-                Ez az alkalmazás a WorldSkills versenyekre való mentális felkészültségedet
-                méri fel. Koncentráció, logikai gondolkodás, szemléletmód és célorientáció
-                tesztek várnak rád.
-              </Text>
-              <View style={styles.modeRow}>
-                <View style={styles.modeChip}>
-                  <Ionicons name="school-outline" size={14} color={theme.colors.teal} />
-                  <Text style={styles.modeChipText}>Gyakorló mód</Text>
-                </View>
-                <View style={styles.modeChip}>
-                  <Ionicons name="timer-outline" size={14} color={theme.colors.magenta} />
-                  <Text style={styles.modeChipText}>Kiválasztás mód</Text>
-                </View>
-              </View>
+            <Text style={styles.description}>
+              Ez az alkalmazás a WorldSkills versenyekre való mentális
+              felkészültségedet méri fel és segít a gyakorlásban.
+            </Text>
+          </View>
+
+          {/* Step 1: Skill */}
+          <View style={styles.section}>
+            <View style={styles.stepBadge}>
+              <Text style={styles.stepNumber}>1</Text>
             </View>
-          </View>
-
-          {/* Name */}
-          <View style={styles.section}>
-            <Text style={styles.label}>Neved</Text>
-            <TextInput
-              style={styles.input}
-              value={name}
-              onChangeText={setName}
-              placeholder="Vezetéknév Keresztnév"
-              placeholderTextColor={theme.colors.mediumGray}
-              autoCapitalize="words"
-            />
-          </View>
-
-          {/* Skill selector */}
-          <View style={styles.section}>
-            <Text style={styles.label}>Szakma (WorldSkills Skill)</Text>
+            <Text style={styles.label}>Melyik szakmában versenyzői?</Text>
+            <Text style={styles.labelHint}>Válaszd ki a WorldSkills skill-számodat</Text>
 
             <View style={styles.searchContainer}>
               <Ionicons name="search" size={18} color={theme.colors.mediumGray} />
@@ -98,9 +74,14 @@ export default function OnboardingScreen() {
                 style={styles.searchInput}
                 value={searchQuery}
                 onChangeText={setSearchQuery}
-                placeholder="Keresés..."
+                placeholder="Keresés szakmára..."
                 placeholderTextColor={theme.colors.mediumGray}
               />
+              {searchQuery.length > 0 && (
+                <TouchableOpacity onPress={() => setSearchQuery('')}>
+                  <Ionicons name="close-circle" size={18} color={theme.colors.mediumGray} />
+                </TouchableOpacity>
+              )}
             </View>
 
             <View style={styles.skillGrid}>
@@ -121,12 +102,39 @@ export default function OnboardingScreen() {
                   </Text>
                 </TouchableOpacity>
               ))}
+              {filteredSkills.length === 0 && (
+                <Text style={styles.noResults}>Nincs találat: „{searchQuery}"</Text>
+              )}
             </View>
+
+            {selectedSkill && (
+              <View style={styles.selectedBadge}>
+                <Ionicons name="checkmark-circle" size={18} color={theme.colors.success} />
+                <Text style={styles.selectedText}>{selectedSkill}</Text>
+              </View>
+            )}
+          </View>
+
+          {/* Step 2: Name */}
+          <View style={styles.section}>
+            <View style={styles.stepBadge}>
+              <Text style={styles.stepNumber}>2</Text>
+            </View>
+            <Text style={styles.label}>Neved</Text>
+            <Text style={styles.labelHint}>Így fognak az eredmények megjelenni</Text>
+            <TextInput
+              style={styles.input}
+              value={name}
+              onChangeText={setName}
+              placeholder="Vezetéknév Keresztnév"
+              placeholderTextColor={theme.colors.mediumGray}
+              autoCapitalize="words"
+            />
           </View>
 
           <View style={styles.buttonContainer}>
             <Button
-              title="Indítás"
+              title="Tovább"
               onPress={handleStart}
               disabled={!name.trim() || !selectedSkill}
             />
@@ -138,138 +146,62 @@ export default function OnboardingScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.white,
-  },
-  scroll: {
-    padding: theme.spacing.lg,
-    paddingBottom: theme.spacing.xxl,
-  },
-  hero: {
-    alignItems: 'center',
-    marginBottom: theme.spacing.xl,
-  },
-  logoRow: {
-    marginBottom: theme.spacing.md,
-  },
+  container: { flex: 1, backgroundColor: theme.colors.white },
+  scroll: { padding: theme.spacing.lg, paddingBottom: theme.spacing.xxl },
+  // Hero
+  hero: { alignItems: 'center', marginBottom: theme.spacing.xl },
   logoStar: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: theme.colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    ...theme.shadows.md,
+    width: 60, height: 60, borderRadius: 30, backgroundColor: theme.colors.primary,
+    alignItems: 'center', justifyContent: 'center', marginBottom: theme.spacing.md, ...theme.shadows.md,
   },
-  title: {
-    fontSize: theme.fontSizes.xxl,
-    fontWeight: '800',
-    color: theme.colors.primary,
-    letterSpacing: -0.5,
-  },
-  subtitle: {
-    fontSize: theme.fontSizes.md,
-    color: theme.colors.gray,
-    marginTop: 2,
-  },
-  descriptionCard: {
-    backgroundColor: theme.colors.background,
-    borderRadius: theme.borderRadius.lg,
-    padding: theme.spacing.md,
-    marginTop: theme.spacing.lg,
-    width: '100%',
-  },
+  title: { fontSize: theme.fontSizes.xxl, fontWeight: '800', color: theme.colors.primary, letterSpacing: -0.5 },
+  subtitle: { fontSize: theme.fontSizes.md, color: theme.colors.gray, marginTop: 2 },
   description: {
-    fontSize: theme.fontSizes.sm,
-    color: theme.colors.darkGray,
-    lineHeight: 22,
-    textAlign: 'center',
+    fontSize: theme.fontSizes.sm, color: theme.colors.gray, textAlign: 'center',
+    lineHeight: 22, marginTop: theme.spacing.md, paddingHorizontal: theme.spacing.md,
   },
-  modeRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: theme.spacing.sm,
-    marginTop: theme.spacing.md,
+  // Sections
+  section: { marginBottom: theme.spacing.lg },
+  stepBadge: {
+    width: 28, height: 28, borderRadius: 14, backgroundColor: theme.colors.primary,
+    alignItems: 'center', justifyContent: 'center', marginBottom: theme.spacing.sm,
   },
-  modeChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: theme.colors.white,
-    paddingHorizontal: theme.spacing.sm,
-    paddingVertical: theme.spacing.xs,
-    borderRadius: theme.borderRadius.full,
-  },
-  modeChipText: {
-    fontSize: theme.fontSizes.xs,
-    fontWeight: '600',
-    color: theme.colors.darkGray,
-  },
-  section: {
-    marginBottom: theme.spacing.lg,
-  },
-  label: {
-    fontSize: theme.fontSizes.sm,
-    fontWeight: '700',
-    color: theme.colors.darkGray,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    marginBottom: theme.spacing.sm,
-  },
+  stepNumber: { color: theme.colors.white, fontSize: theme.fontSizes.sm, fontWeight: '800' },
+  label: { fontSize: theme.fontSizes.lg, fontWeight: '700', color: theme.colors.black, marginBottom: 2 },
+  labelHint: { fontSize: theme.fontSizes.sm, color: theme.colors.gray, marginBottom: theme.spacing.md },
+  // Input
   input: {
-    borderWidth: 1.5,
-    borderColor: theme.colors.lightGray,
-    borderRadius: theme.borderRadius.md,
-    paddingHorizontal: theme.spacing.md,
-    paddingVertical: 14,
-    fontSize: theme.fontSizes.md,
-    color: theme.colors.black,
-    backgroundColor: theme.colors.background,
+    borderWidth: 1.5, borderColor: theme.colors.lightGray, borderRadius: theme.borderRadius.md,
+    paddingHorizontal: theme.spacing.md, paddingVertical: 14, fontSize: theme.fontSizes.md,
+    color: theme.colors.black, backgroundColor: theme.colors.background,
   },
+  // Search
   searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: theme.colors.background,
-    borderRadius: theme.borderRadius.md,
-    paddingHorizontal: theme.spacing.md,
-    marginBottom: theme.spacing.sm,
-    borderWidth: 1.5,
-    borderColor: theme.colors.lightGray,
+    flexDirection: 'row', alignItems: 'center', backgroundColor: theme.colors.background,
+    borderRadius: theme.borderRadius.md, paddingHorizontal: theme.spacing.md,
+    marginBottom: theme.spacing.sm, borderWidth: 1.5, borderColor: theme.colors.lightGray,
   },
   searchInput: {
-    flex: 1,
-    paddingVertical: 10,
-    paddingHorizontal: theme.spacing.sm,
-    fontSize: theme.fontSizes.sm,
-    color: theme.colors.black,
+    flex: 1, paddingVertical: 10, paddingHorizontal: theme.spacing.sm,
+    fontSize: theme.fontSizes.sm, color: theme.colors.black,
   },
-  skillGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: theme.spacing.xs,
-  },
+  // Skills
+  skillGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing.xs },
   skillChip: {
-    paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.sm,
-    borderRadius: theme.borderRadius.full,
-    backgroundColor: theme.colors.background,
-    borderWidth: 1.5,
-    borderColor: theme.colors.lightGray,
+    paddingHorizontal: theme.spacing.md, paddingVertical: theme.spacing.sm,
+    borderRadius: theme.borderRadius.full, backgroundColor: theme.colors.background,
+    borderWidth: 1.5, borderColor: theme.colors.lightGray,
   },
-  skillChipActive: {
-    backgroundColor: theme.colors.primary,
-    borderColor: theme.colors.primary,
+  skillChipActive: { backgroundColor: theme.colors.primary, borderColor: theme.colors.primary },
+  skillChipText: { fontSize: theme.fontSizes.sm, color: theme.colors.darkGray },
+  skillChipTextActive: { color: theme.colors.white, fontWeight: '700' },
+  noResults: { fontSize: theme.fontSizes.sm, color: theme.colors.mediumGray, fontStyle: 'italic', padding: theme.spacing.md },
+  selectedBadge: {
+    flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: theme.spacing.md,
+    backgroundColor: theme.colors.success + '12', paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm, borderRadius: theme.borderRadius.md,
   },
-  skillChipText: {
-    fontSize: theme.fontSizes.sm,
-    color: theme.colors.darkGray,
-  },
-  skillChipTextActive: {
-    color: theme.colors.white,
-    fontWeight: '700',
-  },
-  buttonContainer: {
-    marginTop: theme.spacing.md,
-  },
+  selectedText: { fontSize: theme.fontSizes.sm, fontWeight: '600', color: theme.colors.success },
+  // Button
+  buttonContainer: { marginTop: theme.spacing.md },
 });
