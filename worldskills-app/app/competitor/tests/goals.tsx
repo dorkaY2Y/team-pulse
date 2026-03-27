@@ -131,8 +131,8 @@ export default function GoalsScreen() {
           </View>
           <Text style={styles.menuMainTitle}>Viszonyító és Elsajátítási Célok</Text>
           <Text style={styles.menuDesc}>
-            Ez a kérdőív felméri, hogy inkább a másokhoz viszonyított teljesítmény (viszonyítócél)
-            vagy a saját fejlődésed (elsajátításicél) motivál.
+            Ez a kérdőív felméri, hogy inkább a másokhoz viszonyított teljesítmény (viszonyító cél)
+            vagy a saját fejlődésed (elsajátítási cél) motivál.
           </Text>
 
           <View style={styles.infoCards}>
