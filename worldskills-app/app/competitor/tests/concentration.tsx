@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,7 +8,7 @@ import { Button } from '../../../components/Button';
 import { theme } from '../../../lib/theme';
 
 type GameState = 'menu' | 'playing' | 'result';
-type ConcentrationTest = 'stroop' | 'sequence' | 'reaction';
+type ConcentrationTest = 'stroop' | 'sequence' | 'reaction' | 'schulte' | 'pairs' | 'numberHunt';
 
 // Stroop test colors
 const STROOP_COLORS = [
@@ -47,6 +47,36 @@ export default function ConcentrationScreen() {
   const reactionStart = useRef(0);
   const reactionTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
 
+  // Schulte table state
+  const [schulteGrid, setSchulteGrid] = useState<number[]>([]);
+  const [schulteNext, setSchulteNext] = useState(1);
+  const [schulteErrors, setSchulteErrors] = useState(0);
+  const [schulteTimer, setSchulteTimer] = useState(0);
+  const schulteInterval = useRef<ReturnType<typeof setInterval>>(undefined);
+
+  // Pairs (memory cards) state
+  const [pairsCards, setPairsCards] = useState<{ id: number; symbol: string; flipped: boolean; matched: boolean }[]>([]);
+  const [pairsFlipped, setPairsFlipped] = useState<number[]>([]);
+  const [pairsMoves, setPairsMoves] = useState(0);
+  const [pairsMatched, setPairsMatched] = useState(0);
+  const pairsLocked = useRef(false);
+
+  // Number hunt state
+  const [huntGrid, setHuntGrid] = useState<number[]>([]);
+  const [huntTarget, setHuntTarget] = useState(0);
+  const [huntFound, setHuntFound] = useState(0);
+  const [huntTotal] = useState(10);
+  const [huntTimer, setHuntTimer] = useState(0);
+  const huntInterval = useRef<ReturnType<typeof setInterval>>(undefined);
+
+  // Cleanup timers
+  useEffect(() => {
+    return () => {
+      if (schulteInterval.current) clearInterval(schulteInterval.current);
+      if (huntInterval.current) clearInterval(huntInterval.current);
+    };
+  }, []);
+
   function startTest(type: ConcentrationTest) {
     setTestType(type);
     setGameState('playing');
@@ -57,6 +87,9 @@ export default function ConcentrationScreen() {
     if (type === 'stroop') generateStroopRound();
     if (type === 'sequence') startSequenceRound(3);
     if (type === 'reaction') startReactionRound();
+    if (type === 'schulte') startSchulte();
+    if (type === 'pairs') startPairs();
+    if (type === 'numberHunt') startNumberHunt();
   }
 
   // ---- STROOP TEST ----
@@ -188,6 +221,149 @@ export default function ConcentrationScreen() {
     }
   }
 
+  // ---- SCHULTE TABLE ----
+  function startSchulte() {
+    const nums = Array.from({ length: 25 }, (_, i) => i + 1);
+    for (let i = nums.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [nums[i], nums[j]] = [nums[j], nums[i]];
+    }
+    setSchulteGrid(nums);
+    setSchulteNext(1);
+    setSchulteErrors(0);
+    setSchulteTimer(0);
+    if (schulteInterval.current) clearInterval(schulteInterval.current);
+    schulteInterval.current = setInterval(() => setSchulteTimer((t) => t + 1), 100);
+  }
+
+  function handleSchulteTap(num: number) {
+    if (num === schulteNext) {
+      const next = schulteNext + 1;
+      setSchulteNext(next);
+      if (next > 25) {
+        if (schulteInterval.current) clearInterval(schulteInterval.current);
+        const timeSeconds = Math.round(schulteTimer / 10);
+        // Score: max 10 points. Under 30s = 10, each 5s over = -1 point
+        const s = Math.max(0, Math.round(10 - Math.max(0, timeSeconds - 30) / 5));
+        finishTest(s, 10);
+      }
+    } else {
+      setSchulteErrors((e) => e + 1);
+    }
+  }
+
+  // ---- PAIRS (MEMORY CARDS) ----
+  function startPairs() {
+    const symbols = ['◆', '★', '●', '▲', '■', '♥', '♦', '♣'];
+    const deck = [...symbols, ...symbols].map((s, i) => ({
+      id: i,
+      symbol: s,
+      flipped: false,
+      matched: false,
+    }));
+    for (let i = deck.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [deck[i], deck[j]] = [deck[j], deck[i]];
+    }
+    setPairsCards(deck);
+    setPairsFlipped([]);
+    setPairsMoves(0);
+    setPairsMatched(0);
+    pairsLocked.current = false;
+  }
+
+  function handlePairsTap(idx: number) {
+    if (pairsLocked.current) return;
+    const card = pairsCards[idx];
+    if (card.flipped || card.matched) return;
+
+    const newCards = [...pairsCards];
+    newCards[idx] = { ...newCards[idx], flipped: true };
+    setPairsCards(newCards);
+
+    const newFlipped = [...pairsFlipped, idx];
+    setPairsFlipped(newFlipped);
+
+    if (newFlipped.length === 2) {
+      pairsLocked.current = true;
+      setPairsMoves((m) => m + 1);
+      const [a, b] = newFlipped;
+
+      if (newCards[a].symbol === newCards[b].symbol) {
+        // Match!
+        newCards[a] = { ...newCards[a], matched: true };
+        newCards[b] = { ...newCards[b], matched: true };
+        setPairsCards(newCards);
+        setPairsFlipped([]);
+        const matched = pairsMatched + 1;
+        setPairsMatched(matched);
+        pairsLocked.current = false;
+
+        if (matched >= 8) {
+          const moves = pairsMoves + 1;
+          // Score: max 10 points. 8 moves (perfect) = 10, each extra move = -0.5
+          const s = Math.max(0, Math.round(10 - Math.max(0, moves - 8) * 0.5));
+          setTimeout(() => finishTest(s, 10), 300);
+        }
+      } else {
+        // No match, flip back
+        setTimeout(() => {
+          const resetCards = [...newCards];
+          resetCards[a] = { ...resetCards[a], flipped: false };
+          resetCards[b] = { ...resetCards[b], flipped: false };
+          setPairsCards(resetCards);
+          setPairsFlipped([]);
+          pairsLocked.current = false;
+        }, 800);
+      }
+    }
+  }
+
+  // ---- NUMBER HUNT ----
+  function startNumberHunt() {
+    setHuntFound(0);
+    setHuntTimer(0);
+    if (huntInterval.current) clearInterval(huntInterval.current);
+    huntInterval.current = setInterval(() => setHuntTimer((t) => t + 1), 100);
+    generateHuntRound();
+  }
+
+  function generateHuntRound() {
+    const target = Math.floor(Math.random() * 90) + 10; // 2-digit
+    const grid: number[] = [];
+    // Put target at a random position
+    const targetPos = Math.floor(Math.random() * 36);
+    for (let i = 0; i < 36; i++) {
+      if (i === targetPos) {
+        grid.push(target);
+      } else {
+        let num;
+        do {
+          num = Math.floor(Math.random() * 90) + 10;
+        } while (num === target);
+        grid.push(num);
+      }
+    }
+    setHuntGrid(grid);
+    setHuntTarget(target);
+  }
+
+  function handleHuntTap(num: number) {
+    if (num === huntTarget) {
+      const found = huntFound + 1;
+      setHuntFound(found);
+      if (found >= huntTotal) {
+        if (huntInterval.current) clearInterval(huntInterval.current);
+        const timeSeconds = Math.round(huntTimer / 10);
+        // Score: max 10. Under 20s = 10, each 3s over = -1
+        const s = Math.max(0, Math.round(10 - Math.max(0, timeSeconds - 20) / 3));
+        finishTest(s, 10);
+      } else {
+        generateHuntRound();
+      }
+    }
+  }
+
   // ---- FINISH ----
   async function finishTest(finalScore: number, maxScore: number) {
     const timeTaken = Math.round((Date.now() - startTime) / 1000);
@@ -209,7 +385,7 @@ export default function ConcentrationScreen() {
           <Text style={styles.menuTitle}>Koncentráció</Text>
         </View>
 
-        <View style={styles.menuCards}>
+        <ScrollView style={styles.menuCards} contentContainerStyle={{ paddingBottom: 40 }}>
           <TouchableOpacity style={styles.testCard} onPress={() => startTest('stroop')}>
             <View style={[styles.testCardIcon, { backgroundColor: '#0077C815' }]}>
               <Ionicons name="color-palette-outline" size={28} color="#0077C8" />
@@ -242,7 +418,46 @@ export default function ConcentrationScreen() {
             </Text>
             <Text style={styles.testCardInfo}>5 kör</Text>
           </TouchableOpacity>
-        </View>
+
+          <View style={styles.sectionDivider}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>FEJLESZTŐ GYAKORLATOK</Text>
+            <View style={styles.dividerLine} />
+          </View>
+
+          <TouchableOpacity style={styles.testCard} onPress={() => startTest('schulte')}>
+            <View style={[styles.testCardIcon, { backgroundColor: '#0084AD15' }]}>
+              <Ionicons name="apps-outline" size={28} color="#0084AD" />
+            </View>
+            <Text style={styles.testCardTitle}>Schulte-táblázat</Text>
+            <Text style={styles.testCardDesc}>
+              Találd meg a számokat 1-től 25-ig sorrendben, amilyen gyorsan csak tudod!
+            </Text>
+            <Text style={styles.testCardInfo}>Időre megy</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.testCard} onPress={() => startTest('pairs')}>
+            <View style={[styles.testCardIcon, { backgroundColor: '#FF6C0C15' }]}>
+              <Ionicons name="copy-outline" size={28} color="#FF6C0C" />
+            </View>
+            <Text style={styles.testCardTitle}>Párkereső</Text>
+            <Text style={styles.testCardDesc}>
+              Fordítsd fel a kártyákat és találd meg az összes párt minél kevesebb lépésből!
+            </Text>
+            <Text style={styles.testCardInfo}>8 pár · 16 kártya</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.testCard} onPress={() => startTest('numberHunt')}>
+            <View style={[styles.testCardIcon, { backgroundColor: '#4A0D6615' }]}>
+              <Ionicons name="search-outline" size={28} color="#4A0D66" />
+            </View>
+            <Text style={styles.testCardTitle}>Szám-vadász</Text>
+            <Text style={styles.testCardDesc}>
+              Keresd meg a célszámot a számtáblázatban, amilyen gyorsan csak tudod!
+            </Text>
+            <Text style={styles.testCardInfo}>10 kör · Időre megy</Text>
+          </TouchableOpacity>
+        </ScrollView>
       </SafeAreaView>
     );
   }
@@ -349,6 +564,76 @@ export default function ConcentrationScreen() {
             </View>
           )}
         </TouchableOpacity>
+      )}
+
+      {testType === 'schulte' && (
+        <View style={styles.gameContainer}>
+          <Text style={styles.schulteTimer}>{(schulteTimer / 10).toFixed(1)}s</Text>
+          <Text style={styles.schulteInstruction}>Koppints a következő számra: <Text style={styles.schulteTarget}>{schulteNext}</Text></Text>
+          {schulteErrors > 0 && <Text style={styles.schulteErrors}>Hibák: {schulteErrors}</Text>}
+          <View style={styles.schulteGrid}>
+            {schulteGrid.map((num, i) => (
+              <TouchableOpacity
+                key={i}
+                style={[
+                  styles.schulteCell,
+                  num < schulteNext && styles.schulteCellDone,
+                ]}
+                onPress={() => handleSchulteTap(num)}
+                disabled={num < schulteNext}
+              >
+                <Text style={[
+                  styles.schulteCellText,
+                  num < schulteNext && styles.schulteCellTextDone,
+                ]}>{num}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      )}
+
+      {testType === 'pairs' && (
+        <View style={styles.gameContainer}>
+          <Text style={styles.roundText}>Lépések: {pairsMoves} · Párok: {pairsMatched}/8</Text>
+          <View style={styles.pairsGrid}>
+            {pairsCards.map((card, i) => (
+              <TouchableOpacity
+                key={card.id}
+                style={[
+                  styles.pairsCard,
+                  (card.flipped || card.matched) && styles.pairsCardFlipped,
+                  card.matched && styles.pairsCardMatched,
+                ]}
+                onPress={() => handlePairsTap(i)}
+                disabled={card.matched}
+              >
+                <Text style={styles.pairsCardText}>
+                  {card.flipped || card.matched ? card.symbol : '?'}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      )}
+
+      {testType === 'numberHunt' && (
+        <View style={styles.gameContainer}>
+          <Text style={styles.huntTimer}>{(huntTimer / 10).toFixed(1)}s</Text>
+          <Text style={styles.huntInstruction}>Keresd meg:</Text>
+          <Text style={styles.huntTargetText}>{huntTarget}</Text>
+          <Text style={styles.huntProgress}>{huntFound}/{huntTotal}</Text>
+          <View style={styles.huntGrid}>
+            {huntGrid.map((num, i) => (
+              <TouchableOpacity
+                key={`${i}-${num}`}
+                style={styles.huntCell}
+                onPress={() => handleHuntTap(num)}
+              >
+                <Text style={styles.huntCellText}>{num}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
       )}
     </SafeAreaView>
   );
@@ -556,5 +841,148 @@ const styles = StyleSheet.create({
   resultActions: {
     width: '100%',
     gap: theme.spacing.sm,
+  },
+  // Section divider
+  sectionDivider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.sm,
+    marginVertical: theme.spacing.sm,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: theme.colors.lightGray,
+  },
+  dividerText: {
+    fontSize: theme.fontSizes.xs,
+    fontWeight: '700',
+    color: theme.colors.mediumGray,
+    letterSpacing: 1,
+  },
+  // Schulte
+  schulteTimer: {
+    fontSize: 32,
+    fontWeight: '900',
+    color: theme.colors.primary,
+    marginBottom: theme.spacing.xs,
+  },
+  schulteInstruction: {
+    fontSize: theme.fontSizes.md,
+    color: theme.colors.darkGray,
+    marginBottom: theme.spacing.sm,
+  },
+  schulteTarget: {
+    fontWeight: '900',
+    color: theme.colors.primary,
+    fontSize: theme.fontSizes.lg,
+  },
+  schulteErrors: {
+    fontSize: theme.fontSizes.sm,
+    color: theme.colors.error,
+    marginBottom: theme.spacing.sm,
+  },
+  schulteGrid: {
+    width: 300,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 4,
+  },
+  schulteCell: {
+    width: 56,
+    height: 56,
+    borderRadius: theme.borderRadius.sm,
+    backgroundColor: theme.colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: theme.colors.lightGray,
+  },
+  schulteCellDone: {
+    backgroundColor: theme.colors.primary + '15',
+    borderColor: theme.colors.primary + '30',
+  },
+  schulteCellText: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: theme.colors.black,
+  },
+  schulteCellTextDone: {
+    color: theme.colors.primary,
+    opacity: 0.4,
+  },
+  // Pairs
+  pairsGrid: {
+    width: 300,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    justifyContent: 'center',
+  },
+  pairsCard: {
+    width: 66,
+    height: 80,
+    borderRadius: theme.borderRadius.md,
+    backgroundColor: theme.colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pairsCardFlipped: {
+    backgroundColor: theme.colors.white,
+    borderWidth: 2,
+    borderColor: theme.colors.primary,
+  },
+  pairsCardMatched: {
+    backgroundColor: theme.colors.primary + '15',
+    borderColor: theme.colors.primary + '40',
+  },
+  pairsCardText: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: theme.colors.white,
+  },
+  // Number hunt
+  huntTimer: {
+    fontSize: 28,
+    fontWeight: '900',
+    color: theme.colors.primary,
+    marginBottom: theme.spacing.xs,
+  },
+  huntInstruction: {
+    fontSize: theme.fontSizes.sm,
+    color: theme.colors.gray,
+  },
+  huntTargetText: {
+    fontSize: 48,
+    fontWeight: '900',
+    color: theme.colors.magenta,
+    marginBottom: theme.spacing.xs,
+  },
+  huntProgress: {
+    fontSize: theme.fontSizes.sm,
+    fontWeight: '700',
+    color: theme.colors.mediumGray,
+    marginBottom: theme.spacing.md,
+  },
+  huntGrid: {
+    width: 300,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 4,
+  },
+  huntCell: {
+    width: 47,
+    height: 44,
+    borderRadius: theme.borderRadius.sm,
+    backgroundColor: theme.colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: theme.colors.lightGray,
+  },
+  huntCellText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: theme.colors.darkGray,
   },
 });
