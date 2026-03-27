@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.primary,
   },
   secondary: {
-    backgroundColor: theme.colors.darkGray,
+    backgroundColor: theme.colors.secondary,
   },
   outline: {
     backgroundColor: 'transparent',

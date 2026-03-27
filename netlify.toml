@@ -1,4 +1,4 @@
-# netlify.toml – Team Pulse by Y2Y
+# netlify.toml – Team Pulse
 
 [build]
   publish = "."
@@ -6,6 +6,16 @@
   command = "node build-config.js"
 
 # Redirect /survey → /survey.html (clean URLs)
+[[redirects]]
+  from = "/ws"
+  to = "/worldskills-web/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/ws/*"
+  to = "/worldskills-web/index.html"
+  status = 200
+
 [[redirects]]
   from = "/survey"
   to   = "/survey.html"

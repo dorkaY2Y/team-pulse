@@ -402,7 +402,7 @@ async function generateInsights() {
 async function callAnthropicDirect(payload) {
   const { teamName, n, averages, openAnswers } = payload;
 
-  const system = `Te egy tapasztalt team coach vagy, aki Y2Y módszertannal dolgozik.
+  const system = `Te egy tapasztalt team coach vagy, aki coaching módszertannal dolgozik.
 Kapsz egy csapat assessment eredményeit 5 dimenzión keresztül (1–7 skálán), valamint a csapattagok nyílt válaszait.
 Elemezd az eredményeket és adj coaching insightokat MAGYARUL.
 Légy konkrét – azonosítsd a mintázatokat, feszültségpontokat és erőforrásokat.

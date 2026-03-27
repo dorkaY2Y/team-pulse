@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '../../../lib/auth-context';
+import { saveResult } from '../../../lib/results';
 import { supabase } from '../../../lib/supabase';
 import { Button } from '../../../components/Button';
 import { theme } from '../../../lib/theme';
@@ -45,7 +45,7 @@ const DEMO_QUESTIONS: QuizQuestion[] = [
       { text: 'Skills for All', is_correct: false },
       { text: 'Raising the bar', is_correct: false },
       { text: 'One School One Country', is_correct: false },
-      { text: 'Skills Change Lives', is_correct: false },
+      { text: 'Skills Change Lives', is_correct: true },
     ],
   },
   {
@@ -72,7 +72,7 @@ const DEMO_QUESTIONS: QuizQuestion[] = [
 
 export default function QuizScreen() {
   const router = useRouter();
-  const { session } = useAuth();
+
   const [gameState, setGameState] = useState<GameState>('menu');
   const [questions, setQuestions] = useState<QuizQuestion[]>(DEMO_QUESTIONS);
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -164,16 +164,7 @@ export default function QuizScreen() {
     setTimerActive(false);
     setGameState('result');
 
-    if (session?.user) {
-      await supabase.from('test_results').insert({
-        user_id: session.user.id,
-        test_id: null,
-        score,
-        max_score: questions.length,
-        percentage: Math.round((score / questions.length) * 100),
-        time_taken_seconds: timeTaken,
-      });
-    }
+    await saveResult('quiz' as any, 'WorldSkills Kvíz', score, questions.length, timeTaken);
   }
 
   if (gameState === 'loading') {
@@ -194,15 +185,16 @@ export default function QuizScreen() {
           <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
             <Ionicons name="arrow-back" size={24} color={theme.colors.black} />
           </TouchableOpacity>
-          <Text style={styles.menuTitle}>Feleletválasztós</Text>
+          <Text style={styles.menuTitle}>WorldSkills Kvíz</Text>
         </View>
 
-        <View style={styles.menuContent}>
+        <ScrollView contentContainerStyle={styles.menuContent}>
           <View style={styles.menuIcon}>
-            <Ionicons name="list-outline" size={64} color={theme.colors.primary} />
+            <Ionicons name="help-circle-outline" size={64} color={theme.colors.primary} />
           </View>
+          <Text style={styles.menuMainTitle}>Feleletválasztós Kvíz</Text>
           <Text style={styles.menuDesc}>
-            Tudásfelmérő kérdéssor a tesztbankból. Minden kérdésre 30 másodperced van.
+            Tudásfelmérő kérdéssor a WorldSkills versenyekről. Minden kérdésre 30 másodperced van válaszolni.
           </Text>
           <Text style={styles.menuInfo}>
             {questions.length} kérdés • 30 mp/kérdés
@@ -212,7 +204,7 @@ export default function QuizScreen() {
             onPress={loadQuestions}
             style={{ marginTop: theme.spacing.lg }}
           />
-        </View>
+        </ScrollView>
       </SafeAreaView>
     );
   }
@@ -278,8 +270,8 @@ export default function QuizScreen() {
 
         <View style={styles.options}>
           {q.options.map((opt, i) => {
-            let optStyle = [styles.option];
-            let textColor = theme.colors.black;
+            let optStyle: any[] = [styles.option];
+            let textColor: string = theme.colors.black;
 
             if (selectedAnswer !== null) {
               if (opt.is_correct) {
@@ -343,9 +335,7 @@ const styles = StyleSheet.create({
     color: theme.colors.black,
   },
   menuContent: {
-    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
     padding: theme.spacing.xl,
   },
   menuIcon: {
@@ -356,6 +346,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: theme.spacing.lg,
+  },
+  menuMainTitle: {
+    fontSize: theme.fontSizes.xxl,
+    fontWeight: '800',
+    color: theme.colors.black,
+    marginBottom: theme.spacing.md,
   },
   menuDesc: {
     fontSize: theme.fontSizes.md,

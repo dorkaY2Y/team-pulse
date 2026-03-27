@@ -1,35 +1,39 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useAuth } from '../lib/auth-context';
+import { Ionicons } from '@expo/vector-icons';
+import { getLocalProfile } from '../lib/storage';
 import { theme } from '../lib/theme';
 
 export default function IndexScreen() {
-  const { session, role, loading } = useAuth();
   const router = useRouter();
+  const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    if (loading) return;
-
-    if (!session) {
-      router.replace('/auth/login');
-    } else if (role === 'admin') {
-      router.replace('/admin');
-    } else {
-      router.replace('/competitor');
+    async function check() {
+      const profile = await getLocalProfile();
+      if (profile?.setupComplete) {
+        router.replace('/competitor');
+      } else {
+        router.replace('/onboarding');
+      }
+      setChecking(false);
     }
-  }, [session, role, loading]);
+    check();
+  }, []);
 
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
-        <View style={styles.logoStar}>
-          <Text style={styles.logoStarText}>★</Text>
+        <View style={styles.logoBg}>
+          <View style={styles.logoStar}>
+            <Ionicons name="star" size={36} color={theme.colors.white} />
+          </View>
         </View>
         <Text style={styles.title}>WorldSkills</Text>
         <Text style={styles.subtitle}>Mentális Kiválasztás</Text>
       </View>
-      <ActivityIndicator size="large" color={theme.colors.primary} />
+      <ActivityIndicator size="large" color="rgba(255,255,255,0.6)" />
     </View>
   );
 }
@@ -39,34 +43,38 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.navy,
   },
   logoContainer: {
     alignItems: 'center',
     marginBottom: theme.spacing.xxl,
   },
-  logoStar: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: theme.colors.primary,
+  logoBg: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    backgroundColor: 'rgba(255,255,255,0.12)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: theme.spacing.md,
+    marginBottom: theme.spacing.lg,
   },
-  logoStarText: {
-    fontSize: 36,
-    color: theme.colors.white,
+  logoStar: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   title: {
     fontSize: theme.fontSizes.hero,
     fontWeight: '800',
-    color: theme.colors.black,
+    color: theme.colors.white,
     letterSpacing: -1,
   },
   subtitle: {
     fontSize: theme.fontSizes.lg,
-    color: theme.colors.gray,
+    color: 'rgba(255,255,255,0.6)',
     marginTop: theme.spacing.xs,
   },
 });

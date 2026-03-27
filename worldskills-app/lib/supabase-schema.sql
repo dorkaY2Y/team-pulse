@@ -77,11 +77,30 @@ CREATE POLICY "Admins can manage questions" ON questions
     EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
   );
 
--- Test results
+-- Test results (simplified - no auth required)
 CREATE TABLE test_results (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID REFERENCES auth.users(id),
-  test_id UUID REFERENCES tests(id),
+  user_name TEXT NOT NULL,
+  user_skill TEXT NOT NULL,
+  test_type TEXT NOT NULL,
+  test_label TEXT NOT NULL,
+  score INTEGER NOT NULL,
+  max_score INTEGER NOT NULL,
+  percentage DECIMAL(5,2) NOT NULL,
+  time_taken_seconds INTEGER,
+  details JSONB,
+  mode TEXT DEFAULT 'practice',
+  completed_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Allow anyone to insert and read (no auth needed)
+ALTER TABLE test_results ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can insert results" ON test_results
+  FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Anyone can read results" ON test_results
+  FOR SELECT USING (true);
   score INTEGER NOT NULL,
   max_score INTEGER NOT NULL,
   percentage DECIMAL(5,2) NOT NULL,

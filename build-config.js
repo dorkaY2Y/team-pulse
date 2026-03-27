@@ -8,7 +8,7 @@ const config = {
   SUPABASE_URL: process.env.SUPABASE_URL || '',
   SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY || '',
   ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY || '',
-  ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || 'y2y2024'
+  ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || 'admin2024'
 };
 
 if (!config.SUPABASE_URL || !config.SUPABASE_ANON_KEY) {
