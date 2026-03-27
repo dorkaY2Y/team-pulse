@@ -45,7 +45,7 @@ const DEMO_QUESTIONS: QuizQuestion[] = [
       { text: 'Skills for All', is_correct: false },
       { text: 'Raising the bar', is_correct: false },
       { text: 'One School One Country', is_correct: false },
-      { text: 'Skills Change Lives', is_correct: false },
+      { text: 'Skills Change Lives', is_correct: true },
     ],
   },
   {

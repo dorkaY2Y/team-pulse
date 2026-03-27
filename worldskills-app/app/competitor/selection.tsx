@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
   doneContainer: { padding: theme.spacing.md, backgroundColor: theme.colors.white, borderTopWidth: 1, borderTopColor: theme.colors.lightGray },
   doneButton: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: theme.spacing.sm,
-    backgroundColor: '#0084AD', borderRadius: theme.borderRadius.md, paddingVertical: 16,
+    backgroundColor: theme.colors.primary, borderRadius: theme.borderRadius.md, paddingVertical: 16,
   },
   doneButtonText: { color: theme.colors.white, fontSize: theme.fontSizes.lg, fontWeight: '700' },
 });

@@ -83,11 +83,8 @@ export default function GoalsScreen() {
   }
 
   function calculateResults(allAnswers: Answer[]) {
-    // Viszonyítócél: Q 1,3,4,6,9,11 -> összeg / 6
-    // Correction: based on answer key, comparative = 1,3,4,6,9,10 and mastery = 2,5,7,8,11,12
-    // But the sheet says: 1,3,4,6,9,11 = comparative; 2,5,7,8,10,12 = mastery
-    const comparativeIds = [1, 3, 4, 6, 9, 11];
-    const masteryIds = [2, 5, 7, 8, 10, 12];
+    const comparativeIds = [1, 3, 4, 6, 9, 10];
+    const masteryIds = [2, 5, 7, 8, 11, 12];
 
     const comparativeSum = allAnswers
       .filter((a) => comparativeIds.includes(a.questionId))
@@ -141,11 +138,11 @@ export default function GoalsScreen() {
           <View style={styles.infoCards}>
             <View style={[styles.infoCard, { backgroundColor: theme.colors.orange + '15' }]}>
               <Ionicons name="trophy-outline" size={18} color={theme.colors.orange} />
-              <Text style={styles.infoCardText}>Viszonyítócél</Text>
+              <Text style={styles.infoCardText}>Viszonyító cél</Text>
             </View>
             <View style={[styles.infoCard, { backgroundColor: theme.colors.teal + '15' }]}>
               <Ionicons name="trending-up-outline" size={18} color={theme.colors.teal} />
-              <Text style={styles.infoCardText}>Elsajátításicél</Text>
+              <Text style={styles.infoCardText}>Elsajátítási cél</Text>
             </View>
           </View>
 
@@ -170,7 +167,7 @@ export default function GoalsScreen() {
               <View style={[styles.scoreCircle, { backgroundColor: theme.colors.orange }]}>
                 <Text style={styles.scoreValue}>{results.comparative}</Text>
               </View>
-              <Text style={styles.scoreLabel}>Viszonyítócél</Text>
+              <Text style={styles.scoreLabel}>Viszonyító cél</Text>
               <Text style={styles.scoreDesc}>Másokhoz mérés</Text>
             </View>
 
@@ -182,7 +179,7 @@ export default function GoalsScreen() {
               <View style={[styles.scoreCircle, { backgroundColor: theme.colors.teal }]}>
                 <Text style={styles.scoreValue}>{results.mastery}</Text>
               </View>
-              <Text style={styles.scoreLabel}>Elsajátításicél</Text>
+              <Text style={styles.scoreLabel}>Elsajátítási cél</Text>
               <Text style={styles.scoreDesc}>Saját fejlődés</Text>
             </View>
           </View>

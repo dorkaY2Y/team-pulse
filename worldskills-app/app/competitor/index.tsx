@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -58,6 +58,7 @@ const TESTS = [
 export default function CompetitorDashboard() {
   const router = useRouter();
   const [profile, setProfile] = useState<LocalProfile | null>(null);
+  const scrollRef = useRef<ScrollView>(null);
 
   useEffect(() => {
     getLocalProfile().then(setProfile);
@@ -65,7 +66,7 @@ export default function CompetitorDashboard() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView ref={scrollRef} showsVerticalScrollIndicator={false}>
         {/* Header with name + skill */}
         <View style={styles.header}>
           <View style={styles.headerTop}>
@@ -110,14 +111,14 @@ export default function CompetitorDashboard() {
 
           <TouchableOpacity
             style={[styles.modeCard, styles.modeCardPractice]}
-            onPress={() => {/* scroll to tests below */}}
+            onPress={() => scrollRef.current?.scrollToEnd({ animated: true })}
           >
             <View style={[styles.modeIconContainer, { backgroundColor: theme.colors.teal }]}>
               <Ionicons name="school-outline" size={28} color={theme.colors.white} />
             </View>
             <View style={styles.modeInfo}>
-              <Text style={styles.modeTitle}>Gyakorlás</Text>
-              <Text style={styles.modeDesc}>
+              <Text style={styles.modeTitleDark}>Gyakorlás</Text>
+              <Text style={styles.modeDescDark}>
                 Válassz egy tesztet és gyakorolj nyomás nélkül, időlimit nélkül.
               </Text>
             </View>
@@ -246,6 +247,17 @@ const styles = StyleSheet.create({
   modeDesc: {
     fontSize: theme.fontSizes.xs,
     color: 'rgba(255,255,255,0.8)',
+    marginTop: 2,
+    lineHeight: 18,
+  },
+  modeTitleDark: {
+    fontSize: theme.fontSizes.lg,
+    fontWeight: '700',
+    color: theme.colors.black,
+  },
+  modeDescDark: {
+    fontSize: theme.fontSizes.xs,
+    color: theme.colors.gray,
     marginTop: 2,
     lineHeight: 18,
   },
