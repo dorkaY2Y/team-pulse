@@ -1,24 +1,25 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useAuth } from '../lib/auth-context';
+import { getLocalProfile } from '../lib/storage';
 import { theme } from '../lib/theme';
 
 export default function IndexScreen() {
-  const { session, role, loading } = useAuth();
   const router = useRouter();
+  const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    if (loading) return;
-
-    if (!session) {
-      router.replace('/auth/login');
-    } else if (role === 'admin') {
-      router.replace('/admin');
-    } else {
-      router.replace('/competitor');
+    async function check() {
+      const profile = await getLocalProfile();
+      if (profile?.setupComplete) {
+        router.replace('/competitor');
+      } else {
+        router.replace('/onboarding');
+      }
+      setChecking(false);
     }
-  }, [session, role, loading]);
+    check();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: theme.fontSizes.hero,
     fontWeight: '800',
-    color: theme.colors.black,
+    color: theme.colors.primary,
     letterSpacing: -1,
   },
   subtitle: {

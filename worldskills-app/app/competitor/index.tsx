@@ -1,28 +1,30 @@
-import React from 'react';
-import { View, ScrollView, StyleSheet, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Header } from '../../components/Header';
+import { Ionicons } from '@expo/vector-icons';
 import { Card } from '../../components/Card';
-import { useAuth } from '../../lib/auth-context';
+import { getLocalProfile, LocalProfile } from '../../lib/storage';
 import { theme } from '../../lib/theme';
 
-const TEST_CATEGORIES = [
+const TESTS = [
   {
     id: 'iq',
     title: 'IQ Teszt',
-    subtitle: 'Progresszív mátrixok • 20 kérdés • 15 perc',
+    subtitle: 'Progresszív mátrixok • 20 kérdés',
     icon: 'bulb-outline' as const,
     color: '#0084AD',
     route: '/competitor/tests/iq',
+    duration: '15 perc',
   },
   {
     id: 'attention',
     title: 'Figyelem Teszt',
-    subtitle: 'Bourdon-teszt: 400 szimbólum, 5 perc',
+    subtitle: 'Bourdon-teszt: 400 szimbólum',
     icon: 'scan-outline' as const,
     color: '#0077C8',
     route: '/competitor/tests/attention',
+    duration: '5 perc',
   },
   {
     id: 'concentration',
@@ -31,6 +33,7 @@ const TEST_CATEGORIES = [
     icon: 'eye-outline' as const,
     color: '#72D0EB',
     route: '/competitor/tests/concentration',
+    duration: '5 perc',
   },
   {
     id: 'mindset',
@@ -39,6 +42,7 @@ const TEST_CATEGORIES = [
     icon: 'analytics-outline' as const,
     color: '#4A0D66',
     route: '/competitor/tests/mindset',
+    duration: '3 perc',
   },
   {
     id: 'goals',
@@ -47,61 +51,91 @@ const TEST_CATEGORIES = [
     icon: 'flag-outline' as const,
     color: '#FF6C0C',
     route: '/competitor/tests/goals',
+    duration: '3 perc',
   },
 ];
 
 export default function CompetitorDashboard() {
-  const { profile } = useAuth();
   const router = useRouter();
+  const [profile, setProfile] = useState<LocalProfile | null>(null);
+
+  useEffect(() => {
+    getLocalProfile().then(setProfile);
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Welcome header */}
-        <View style={styles.welcomeContainer}>
-          <View style={styles.welcomeRow}>
+        {/* Header with name + skill */}
+        <View style={styles.header}>
+          <View style={styles.headerTop}>
             <View>
-              <Text style={styles.greeting}>Üdvözöljük!</Text>
-              <Text style={styles.name}>{profile?.full_name || 'Versenyző'}</Text>
+              <Text style={styles.greeting}>Üdvözlünk!</Text>
+              <Text style={styles.name}>{profile?.name || 'Versenyző'}</Text>
             </View>
             <View style={styles.avatar}>
               <Text style={styles.avatarText}>
-                {profile?.full_name?.charAt(0)?.toUpperCase() || 'V'}
+                {profile?.name?.charAt(0)?.toUpperCase() || 'V'}
               </Text>
             </View>
           </View>
+          {profile?.skill && (
+            <View style={styles.skillBadge}>
+              <Ionicons name="construct-outline" size={14} color={theme.colors.primary} />
+              <Text style={styles.skillText}>{profile.skill}</Text>
+            </View>
+          )}
         </View>
 
-        {/* Stats bar */}
-        <View style={styles.statsBar}>
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>0</Text>
-            <Text style={styles.statLabel}>Kitöltött</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>—</Text>
-            <Text style={styles.statLabel}>Átlag %</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>—</Text>
-            <Text style={styles.statLabel}>Legjobb</Text>
-          </View>
+        {/* Two mode cards */}
+        <View style={styles.modeSection}>
+          <Text style={styles.sectionLabel}>Válassz módot</Text>
+
+          <TouchableOpacity
+            style={[styles.modeCard, styles.modeCardSelection]}
+            onPress={() => router.push('/competitor/selection' as any)}
+          >
+            <View style={styles.modeIconContainer}>
+              <Ionicons name="timer-outline" size={28} color={theme.colors.white} />
+            </View>
+            <View style={styles.modeInfo}>
+              <Text style={styles.modeTitle}>Mentális Kiválasztás</Text>
+              <Text style={styles.modeDesc}>
+                Összes teszt egymás után, időre. Ha végeztél egy feladattal, üsd le a timert!
+              </Text>
+              <Text style={styles.modeDuration}>~30 perc</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color={theme.colors.white} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.modeCard, styles.modeCardPractice]}
+            onPress={() => {/* scroll to tests below */}}
+          >
+            <View style={[styles.modeIconContainer, { backgroundColor: theme.colors.teal }]}>
+              <Ionicons name="school-outline" size={28} color={theme.colors.white} />
+            </View>
+            <View style={styles.modeInfo}>
+              <Text style={styles.modeTitle}>Gyakorlás</Text>
+              <Text style={styles.modeDesc}>
+                Válassz egy tesztet és gyakorolj nyomás nélkül, időlimit nélkül.
+              </Text>
+            </View>
+            <Ionicons name="chevron-down" size={20} color={theme.colors.gray} />
+          </TouchableOpacity>
         </View>
 
-        {/* Test categories */}
-        <Header title="Tesztek" subtitle="Válassz egy kategóriát" />
-
-        <View style={styles.cards}>
-          {TEST_CATEGORIES.map((cat) => (
+        {/* Individual tests for practice */}
+        <View style={styles.testsSection}>
+          <Text style={styles.sectionLabel}>Tesztek egyenként</Text>
+          {TESTS.map((test) => (
             <Card
-              key={cat.id}
-              title={cat.title}
-              subtitle={cat.subtitle}
-              icon={cat.icon}
-              iconColor={cat.color}
-              onPress={() => router.push(cat.route as any)}
+              key={test.id}
+              title={test.title}
+              subtitle={`${test.subtitle} • ${test.duration}`}
+              icon={test.icon}
+              iconColor={test.color}
+              onPress={() => router.push(test.route as any)}
             />
           ))}
         </View>
@@ -115,19 +149,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.colors.background,
   },
-  welcomeContainer: {
+  // Header
+  header: {
     backgroundColor: theme.colors.white,
     paddingHorizontal: theme.spacing.lg,
     paddingTop: theme.spacing.lg,
     paddingBottom: theme.spacing.md,
   },
-  welcomeRow: {
+  headerTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   greeting: {
-    fontSize: theme.fontSizes.md,
+    fontSize: theme.fontSizes.sm,
     color: theme.colors.gray,
   },
   name: {
@@ -149,37 +184,80 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSizes.lg,
     fontWeight: '700',
   },
-  statsBar: {
+  skillBadge: {
     flexDirection: 'row',
-    backgroundColor: theme.colors.white,
-    marginHorizontal: theme.spacing.md,
-    marginTop: theme.spacing.md,
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: theme.colors.primary + '10',
+    alignSelf: 'flex-start',
+    paddingHorizontal: theme.spacing.sm,
+    paddingVertical: theme.spacing.xs,
+    borderRadius: theme.borderRadius.full,
+    marginTop: theme.spacing.sm,
+  },
+  skillText: {
+    fontSize: theme.fontSizes.xs,
+    fontWeight: '700',
+    color: theme.colors.primary,
+  },
+  // Mode cards
+  modeSection: {
+    padding: theme.spacing.md,
+  },
+  sectionLabel: {
+    fontSize: theme.fontSizes.xs,
+    fontWeight: '700',
+    color: theme.colors.mediumGray,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginBottom: theme.spacing.sm,
+  },
+  modeCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
     borderRadius: theme.borderRadius.lg,
     padding: theme.spacing.md,
-    ...theme.shadows.sm,
+    marginBottom: theme.spacing.sm,
+    ...theme.shadows.md,
   },
-  statItem: {
-    flex: 1,
+  modeCardSelection: {
+    backgroundColor: theme.colors.primary,
+  },
+  modeCardPractice: {
+    backgroundColor: theme.colors.white,
+  },
+  modeIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: theme.borderRadius.md,
+    backgroundColor: 'rgba(255,255,255,0.2)',
     alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: theme.spacing.md,
   },
-  statValue: {
-    fontSize: theme.fontSizes.xl,
-    fontWeight: '800',
-    color: theme.colors.black,
+  modeInfo: {
+    flex: 1,
   },
-  statLabel: {
+  modeTitle: {
+    fontSize: theme.fontSizes.lg,
+    fontWeight: '700',
+    color: theme.colors.white,
+  },
+  modeDesc: {
     fontSize: theme.fontSizes.xs,
-    color: theme.colors.gray,
+    color: 'rgba(255,255,255,0.8)',
     marginTop: 2,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    lineHeight: 18,
   },
-  statDivider: {
-    width: 1,
-    backgroundColor: theme.colors.lightGray,
+  modeDuration: {
+    fontSize: theme.fontSizes.xs,
+    fontWeight: '700',
+    color: theme.colors.yellow,
+    marginTop: 4,
   },
-  cards: {
+  // Tests section
+  testsSection: {
     paddingHorizontal: theme.spacing.md,
-    paddingBottom: theme.spacing.xl,
+    paddingBottom: theme.spacing.xxl,
   },
 });
