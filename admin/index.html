@@ -30,11 +30,12 @@
     <div class="login-error" id="loginError">Hibás jelszó – próbáld újra.</div>
 
     <div style="margin-top:40px;padding-top:20px;border-top:1px solid var(--border);font-size:0.72rem;color:var(--muted);text-align:center;letter-spacing:0.06em;">
-      Facilitátor &nbsp;·&nbsp; ICF PCC
+      Team Pulse &nbsp;·&nbsp; Facilitátor eszköz
     </div>
   </div>
 </div>
 
+<script src="../config.js"></script>
 <script>
   if (sessionStorage.getItem('tp_admin') === 'true') {
     window.location.href = 'dashboard.html';
@@ -51,11 +52,9 @@
       err.style.display = 'block';
       document.getElementById('passwordInput').value = '';
       document.getElementById('passwordInput').focus();
-      // shake animation
       err.animate([{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}], {duration:300});
     }
   }
 </script>
-<script src="../config.js"></script>
 </body>
 </html>
