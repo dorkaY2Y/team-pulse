@@ -12,7 +12,7 @@ const DIMENSIONS = [
       'Ha hibázok ebben a csapatban, azt nem tartják ellenem.',
       'A csapat tagjai képesek nehéz, kényes témákat is felvetni.',
       'Könnyen kérhetek segítséget a csapatom többi tagjától.',
-      'Senki sem utasítana vissza azért, mert merészen véleményt nyilvánítok.',
+      'Nem ér hátrány azért, mert bátran véleményt nyilvánítok.',
       'A csapatban értéknek számít az eltérő nézőpont.',
       'Nyugodtan kifejezem a valódi véleményemet, még ha az szemben áll a többségével.',
       'Ha problémát látok, biztos vagyok benne, hogy érdemes szólni róla.'
@@ -27,14 +27,14 @@ const DIMENSIONS = [
     questions: [
       'Mindenki tisztában van azzal, hogy mi az ő szerepe és felelőssége a csapatban.',
       'A csapatban az erősségek és a feladatok összhangban vannak.',
-      'Ha valaki túlterhelt, a csapat automatikusan segít neki.',
+      'Ha valaki túlterhelt, a csapat magától segít neki.',
       'A csapatnak van közös célja, amellyel mindenki azonosul.',
       'A döntéshozatal folyamata átlátható és igazságos a csapatban.',
       'A csapat képes megújulni és alkalmazkodni, ha megváltoznak a körülmények.',
       'Az én hozzájárulásom valóban számít a csapat eredményeiben.',
       'A csapat eredményeivel kapcsolatban mindenki egyforma felelősséget érez.'
     ],
-    openQuestion: 'Milyen szerep hiányzik szerinted ebből a csapatból – akár emberi, akár funkcionális értelemben?'
+    openQuestion: 'Milyen szerep hiányzik szerinted ebből a csapatból – akár informális, akár funkcionális értelemben?'
   },
   {
     key: 'vc',
@@ -104,7 +104,14 @@ window.addEventListener('DOMContentLoaded', () => {
   if (memberFromUrl) {
     document.getElementById('memberNameInput').value = memberFromUrl;
   }
-  if (teamId) loadTeamName();
+  if (teamId) {
+    loadTeamName();
+  } else {
+    document.querySelector('.welcome-card__body').innerHTML =
+      '<strong style="color:#e55;">Érvénytelen link – hiányzik a csapat azonosítója.</strong><br>Kérd el a facilitátorodtól a helyes kitöltési linket.';
+    const btn = document.querySelector('.welcome-card .btn');
+    if (btn) { btn.disabled = true; btn.style.opacity = '0.4'; }
+  }
 });
 
 async function loadTeamName() {

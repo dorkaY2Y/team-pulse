@@ -21,7 +21,7 @@ const DIM_NAMES = {
 };
 const DIM_ICONS = { ps: '🛡️', tr: '⚙️', vc: '🌐', cc: '💬', sg: '🌱' };
 const OPEN_QS   = {
-  ps: 'Van olyan helyzet, amelyben nem merted volna kimondani, amit gondolsz?',
+  ps: 'Van olyan helyzet, amikor nem merted volna kimondani, amit gondolsz?',
   tr: 'Milyen szerep hiányzik ebből a csapatból?',
   vc: 'Mi az az érték, amit hiányolsz ebből a csapatból?',
   cc: 'Van olyan kimondatlan feszültség, amiről kellene beszélni?',
