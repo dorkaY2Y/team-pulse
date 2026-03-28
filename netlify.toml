@@ -3,18 +3,7 @@
 [build]
   publish = "."
   functions = "netlify/functions"
-  command = "node build-config.js && cd worldskills-app && npm install --legacy-peer-deps && npx expo export --platform web && cp -r dist ../ws"
-
-# WorldSkills app SPA routing
-[[redirects]]
-  from = "/ws"
-  to = "/ws/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/ws/*"
-  to = "/ws/index.html"
-  status = 200
+  command = "node build-config.js"
 
 # Redirect /survey → /survey.html (clean URLs)
 [[redirects]]
