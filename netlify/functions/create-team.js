@@ -120,7 +120,7 @@ function inviteHtml(teamName, leaderName, surveyUrl) {
     </p>
 
     <p style="color:rgba(242,242,240,0.4);font-size:0.8rem;margin-bottom:24px;">
-      5 dimenzió &nbsp;·&nbsp; 40 kérdés &nbsp;·&nbsp; ~15 perc
+      5 dimenzió &nbsp;·&nbsp; 40 kérdés &nbsp;·&nbsp; kb. 15 perc
     </p>
 
     <a href="${surveyUrl}" style="display:inline-block;background:#DED114;color:#111;font-family:'Exo',system-ui,sans-serif;font-weight:700;font-size:0.9rem;padding:14px 32px;border-radius:8px;text-decoration:none;">

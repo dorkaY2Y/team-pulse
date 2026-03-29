@@ -95,6 +95,7 @@ let memberName = '';
 let memberToken = '';
 let teamName = '';
 let answers = {};
+let memberEmail = '';
 
 // ─── URL params ───────────────────────────────────────
 const params = new URLSearchParams(window.location.search);
@@ -125,6 +126,8 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
 
     teamName = member.teams?.name || '';
+    memberEmail = member.email || '';
+    memberName = memberEmail;
     const el = document.getElementById('headerTeamName');
     const bar = document.getElementById('teamNameBar');
     if (el) el.textContent = teamName;
@@ -154,12 +157,6 @@ function showAlreadyCompleted() {
 
 // ─── Start ────────────────────────────────────────────
 function startSurvey() {
-  memberName = document.getElementById('memberNameInput').value.trim();
-  if (!memberName) {
-    document.getElementById('memberNameInput').focus();
-    document.getElementById('memberNameInput').style.borderColor = '#e55';
-    return;
-  }
   if (!memberToken) {
     alert('Érvénytelen link – hiányzik a token.');
     return;
