@@ -1,18 +1,15 @@
 // build-config.js – Generates config.js from Netlify environment variables
-// Required env vars: SUPABASE_URL, SUPABASE_ANON_KEY
-// Optional env vars: ANTHROPIC_API_KEY, ADMIN_PASSWORD
+// Only SUPABASE vars are needed client-side (API keys stay server-side)
 
 const fs = require('fs');
 
 const config = {
   SUPABASE_URL: process.env.SUPABASE_URL || '',
-  SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY || '',
-  ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY || '',
-  ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || 'admin2024'
+  SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY || ''
 };
 
 if (!config.SUPABASE_URL || !config.SUPABASE_ANON_KEY) {
-  console.warn('WARNING: SUPABASE_URL or SUPABASE_ANON_KEY not set. Dashboard will not work.');
+  console.warn('WARNING: SUPABASE_URL or SUPABASE_ANON_KEY not set.');
 }
 
 const content = `// config.js – Auto-generated during build (do not edit)

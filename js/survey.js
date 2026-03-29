@@ -1,5 +1,5 @@
-// survey.js – Survey logic & Supabase write
-// UP2DATE design-aligned rendering
+// survey.js – Token-based survey flow
+// Member opens survey.html?token=MEMBER_TOKEN → fills out → submits to Netlify function
 
 const DIMENSIONS = [
   {
@@ -17,7 +17,7 @@ const DIMENSIONS = [
       'Nyugodtan kifejezem a valódi véleményemet, még ha az szemben áll a többségével.',
       'Ha problémát látok, biztos vagyok benne, hogy érdemes szólni róla.'
     ],
-    openQuestion: 'Van olyan helyzet, amelyben nem merted volna kimondani, amit gondolsz? Mi tartott vissza?'
+    openQuestion: 'Van olyan helyzet, amikor nem merted volna kimondani, amit gondolsz? Mi tartott vissza?'
   },
   {
     key: 'tr',
@@ -89,48 +89,70 @@ const DIMENSIONS = [
   }
 ];
 
-// ─── State ────────────────────────────────────────────────
+// ─── State ────────────────────────────────────────────
 let currentDim = 0;
 let memberName = '';
-let teamId = '';
-let answers = {}; // { ps: { q1: 3, q2: 5, ..., open: '...' }, ... }
+let memberToken = '';
+let teamName = '';
+let answers = {};
 
-// ─── URL params ───────────────────────────────────────────
+// ─── URL params ───────────────────────────────────────
 const params = new URLSearchParams(window.location.search);
-teamId = params.get('team') || '';
-const memberFromUrl = params.get('member') || '';
+memberToken = params.get('token') || '';
 
-window.addEventListener('DOMContentLoaded', () => {
-  if (memberFromUrl) {
-    document.getElementById('memberNameInput').value = memberFromUrl;
+window.addEventListener('DOMContentLoaded', async () => {
+  if (!memberToken) {
+    showInvalidLink();
+    return;
   }
-  if (teamId) {
-    loadTeamName();
-  } else {
-    document.querySelector('.welcome-card__body').innerHTML =
-      '<strong style="color:#e55;">Érvénytelen link – hiányzik a csapat azonosítója.</strong><br>Kérd el a facilitátorodtól a helyes kitöltési linket.';
-    const btn = document.querySelector('.welcome-card .btn');
-    if (btn) { btn.disabled = true; btn.style.opacity = '0.4'; }
+
+  try {
+    // Fetch member info by token
+    const { data: member, error } = await supabaseClient
+      .from('team_members')
+      .select('*, teams(*)')
+      .eq('token', memberToken)
+      .single();
+
+    if (error || !member) {
+      showInvalidLink();
+      return;
+    }
+
+    if (member.completed) {
+      showAlreadyCompleted();
+      return;
+    }
+
+    teamName = member.teams?.name || '';
+    const el = document.getElementById('headerTeamName');
+    const bar = document.getElementById('teamNameBar');
+    if (el) el.textContent = teamName;
+    if (bar) bar.textContent = `Team Pulse · ${teamName}`;
+
+  } catch (e) {
+    console.error(e);
+    showInvalidLink();
   }
 });
 
-async function loadTeamName() {
-  try {
-    const { data } = await supabaseClient
-      .from('teams')
-      .select('name')
-      .eq('id', teamId)
-      .single();
-    if (data) {
-      const el = document.getElementById('headerTeamName');
-      const bar = document.getElementById('teamNameBar');
-      if (el) el.textContent = data.name;
-      if (bar) bar.textContent = `Team Pulse · ${data.name}`;
-    }
-  } catch (e) { /* silently ignore */ }
+function showInvalidLink() {
+  document.querySelector('.welcome-card__body').innerHTML =
+    '<strong style="color:#e55;">Érvénytelen link.</strong><br>Kérd el a csapatvezetődtől a helyes kitöltési linket.';
+  const btn = document.querySelector('.welcome-card .btn');
+  if (btn) { btn.disabled = true; btn.style.opacity = '0.4'; }
 }
 
-// ─── Welcome → Survey ─────────────────────────────────────
+function showAlreadyCompleted() {
+  document.querySelector('.welcome-card__body').innerHTML =
+    '<strong style="color:#50d090;">Ezt a kérdőívet már kitöltötted.</strong><br>Köszönjük a válaszaidat! A csapatvezetőd megkapja a riportot, ha mindenki kitöltötte.';
+  const btn = document.querySelector('.welcome-card .btn');
+  if (btn) { btn.disabled = true; btn.style.opacity = '0.4'; }
+  const nameInput = document.getElementById('memberNameInput');
+  if (nameInput) nameInput.parentElement.style.display = 'none';
+}
+
+// ─── Start ────────────────────────────────────────────
 function startSurvey() {
   memberName = document.getElementById('memberNameInput').value.trim();
   if (!memberName) {
@@ -138,8 +160,8 @@ function startSurvey() {
     document.getElementById('memberNameInput').style.borderColor = '#e55';
     return;
   }
-  if (!teamId) {
-    alert('Érvénytelen link – hiányzik a csapat azonosítója.');
+  if (!memberToken) {
+    alert('Érvénytelen link – hiányzik a token.');
     return;
   }
   document.getElementById('screen-welcome').style.display = 'none';
@@ -147,31 +169,26 @@ function startSurvey() {
   renderDimension(0);
 }
 
-// ─── Render dimension ─────────────────────────────────────
+// ─── Render dimension ─────────────────────────────────
 function renderDimension(dimIndex) {
   const dim = DIMENSIONS[dimIndex];
   const saved = answers[dim.key] || {};
   currentDim = dimIndex;
 
-  // Progress bar
   const pct = Math.round(((dimIndex + 1) / DIMENSIONS.length) * 100);
-  document.getElementById('progressLabel').textContent =
-    `Dimenzió ${dimIndex + 1} / ${DIMENSIONS.length}`;
+  document.getElementById('progressLabel').textContent = `Dimenzió ${dimIndex + 1} / ${DIMENSIONS.length}`;
   document.getElementById('progressFill').style.width = pct + '%';
 
-  // Nav buttons
   document.getElementById('btnBack').disabled = dimIndex === 0;
   document.getElementById('btnNext').textContent =
     dimIndex === DIMENSIONS.length - 1 ? '✓ Beküldés' : 'Következő →';
 
-  // Build card HTML
   const container = document.getElementById('dimensionContainer');
   container.innerHTML = '';
 
   const card = document.createElement('div');
   card.className = 'survey-card fade-up';
 
-  // Dimension header
   const hdr = document.createElement('div');
   hdr.className = 'dim-header';
   hdr.innerHTML = `
@@ -183,7 +200,6 @@ function renderDimension(dimIndex) {
   `;
   card.appendChild(hdr);
 
-  // Questions
   dim.questions.forEach((qText, i) => {
     const qNum = i + 1;
     const key = `q${qNum}`;
@@ -214,15 +230,11 @@ function renderDimension(dimIndex) {
     card.appendChild(block);
   });
 
-  // Open question
   const openBlock = document.createElement('div');
   openBlock.className = 'open-block';
   openBlock.innerHTML = `
     <div class="open-label">${dim.openQuestion}</div>
-    <textarea
-      id="open_${dim.key}"
-      placeholder="Opcionális – oszd meg gondolataidat…"
-      rows="3">${saved.open || ''}</textarea>
+    <textarea id="open_${dim.key}" placeholder="Opcionális – oszd meg gondolataidat…" rows="3">${saved.open || ''}</textarea>
   `;
   card.appendChild(openBlock);
 
@@ -230,7 +242,7 @@ function renderDimension(dimIndex) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ─── Answer selection ─────────────────────────────────────
+// ─── Answer selection ─────────────────────────────────
 function selectAnswer(dimKey, qNum, val) {
   if (!answers[dimKey]) answers[dimKey] = {};
   answers[dimKey][`q${qNum}`] = val;
@@ -241,7 +253,6 @@ function selectAnswer(dimKey, qNum, val) {
   });
 }
 
-// ─── Save open answer ─────────────────────────────────────
 function saveOpenAnswer() {
   const dim = DIMENSIONS[currentDim];
   if (!answers[dim.key]) answers[dim.key] = {};
@@ -249,16 +260,13 @@ function saveOpenAnswer() {
   if (ta) answers[dim.key].open = ta.value.trim();
 }
 
-// ─── Validation ───────────────────────────────────────────
+// ─── Validation ───────────────────────────────────────
 function validateCurrentDimension() {
   const dim = DIMENSIONS[currentDim];
   const saved = answers[dim.key] || {};
-  const missing = dim.questions
-    .map((_, i) => i + 1)
-    .filter(n => !saved[`q${n}`]);
+  const missing = dim.questions.map((_, i) => i + 1).filter(n => !saved[`q${n}`]);
 
   if (missing.length > 0) {
-    // Shake the first unanswered question
     const firstMissing = document.getElementById(`likert_${dim.key}_${missing[0]}`);
     if (firstMissing) {
       firstMissing.animate(
@@ -272,7 +280,7 @@ function validateCurrentDimension() {
   return true;
 }
 
-// ─── Navigation ───────────────────────────────────────────
+// ─── Navigation ───────────────────────────────────────
 function goNext() {
   saveOpenAnswer();
   if (!validateCurrentDimension()) return;
@@ -289,25 +297,27 @@ function goPrev() {
   if (currentDim > 0) renderDimension(currentDim - 1);
 }
 
-// ─── Submit ───────────────────────────────────────────────
+// ─── Submit via Netlify function ──────────────────────
 async function submitSurvey() {
   document.getElementById('screen-survey').style.display = 'none';
   document.getElementById('screen-submitting').style.display = 'block';
 
-  // Build flat record for Supabase
-  const record = { team_id: teamId, member_name: memberName };
-  DIMENSIONS.forEach(dim => {
-    const saved = answers[dim.key] || {};
-    dim.questions.forEach((_, i) => {
-      record[`${dim.key}_${i + 1}`] = saved[`q${i + 1}`] || null;
-    });
-    record[`${dim.key}_open`] = saved.open || null;
-  });
-
   try {
-    const { error } = await supabaseClient.from('responses').insert([record]);
-    if (error) throw error;
+    const res = await fetch('/.netlify/functions/submit-survey', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        memberToken,
+        memberName,
+        answers
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Hiba a beküldésnél.');
+
     window.location.href = 'thank-you.html';
+
   } catch (err) {
     console.error(err);
     document.getElementById('screen-submitting').innerHTML = `
