@@ -239,15 +239,5 @@
 <script src="config.js"></script>
 <script src="js/supabase-client.js"></script>
 <script src="js/survey.js"></script>
-<script>
-  // Show live time
-  function updateTime() {
-    const now = new Date();
-    document.getElementById('timeBar').textContent =
-      now.toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' });
-  }
-  updateTime();
-  setInterval(updateTime, 30000);
-</script>
 </body>
 </html>

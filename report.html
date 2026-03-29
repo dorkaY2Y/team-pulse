@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Riport – Team Pulse</title>
+  <link href="https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .dash-body {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px;
+    }
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .radar-layout {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 20px;
+      margin-bottom: 28px;
+      align-items: start;
+    }
+    .members-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .members-table th {
+      font-family: 'Exo', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .members-table td {
+      padding: 10px 12px;
+      font-size: 0.85rem;
+      border-bottom: 1px solid var(--border2);
+      color: var(--white-dim);
+    }
+    .dash-section { margin-bottom: 28px; }
+
+    .pending-screen {
+      text-align: center;
+      padding: 60px 32px;
+    }
+    .pending-screen h2 {
+      font-family: 'Exo', sans-serif;
+      font-size: 1.5rem;
+      margin-bottom: 12px;
+    }
+    .member-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border2);
+      font-size: 0.85rem;
+    }
+    .member-status:last-child { border-bottom: none; }
+    .status-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .status-dot.done { background: #50d090; }
+    .status-dot.waiting { background: var(--muted); }
+
+    .error-screen {
+      text-align: center;
+      padding: 80px 32px;
+      color: var(--muted);
+    }
+
+    #insightsContent h3 {
+      font-family: 'Exo', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin: 22px 0 8px;
+    }
+    #insightsContent h3:first-child { margin-top: 0; }
+    #insightsContent p { margin-bottom: 10px; font-size: 0.9rem; line-height: 1.8; color: var(--white-dim); }
+    #insightsContent strong { color: var(--white); }
+
+    @media (max-width: 900px) {
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .radar-layout { grid-template-columns: 1fr; }
+      .dash-body { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <span id="topBarText">Team Pulse – Riport</span>
+</div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo-wordmark">TEAM PULSE</a>
+    <div id="teamNameHeader" style="font-family:'Exo',sans-serif;font-weight:700;font-size:0.9rem;color:var(--yellow);"></div>
+  </div>
+</header>
+
+<!-- Error screen -->
+<div id="errorScreen" class="error-screen" style="display:none;">
+  <div style="font-size:2.5rem;margin-bottom:16px;opacity:0.4;">🔒</div>
+  <h2 style="font-family:'Exo',sans-serif;font-size:1.3rem;color:var(--white-dim);margin-bottom:8px;">Érvénytelen riport link</h2>
+  <p style="font-size:0.85rem;">Ellenőrizd az emailedben kapott linket, vagy kérd el újra a csapatvezetőtől.</p>
+</div>
+
+<!-- Pending screen (waiting for all members) -->
+<div id="pendingScreen" class="dash-body" style="display:none;">
+  <div class="pending-screen fade-up">
+    <div style="font-size:2.5rem;margin-bottom:16px;">⏳</div>
+    <h2>Kitöltés folyamatban</h2>
+    <p style="color:var(--muted);font-size:0.9rem;margin-bottom:32px;" id="pendingMsg"></p>
+
+    <div class="card" style="max-width:440px;margin:0 auto;text-align:left;">
+      <div class="section-label" style="margin-bottom:12px;">
+        <span class="label-caps">Csapattagok státusza</span>
+      </div>
+      <div id="memberStatusList"></div>
+    </div>
+
+    <button class="btn btn--outline" style="margin-top:24px;" onclick="location.reload()">↻ Frissítés</button>
+  </div>
+</div>
+
+<!-- Full report -->
+<div id="reportScreen" class="dash-body" style="display:none;">
+  <div class="fade-up">
+
+    <div class="dash-section">
+      <div class="stats-row" id="statsRow"></div>
+    </div>
+
+    <div class="dash-section radar-layout">
+      <div class="card">
+        <div class="section-label" style="margin-bottom:16px;">
+          <span class="label-caps">5 Dimenzió – Csapatatlag</span>
+        </div>
+        <div class="radar-wrap">
+          <canvas id="radarChart"></canvas>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="card">
+          <div class="section-label" style="margin-bottom:16px;">
+            <span class="label-caps">Dimenzió átlagok</span>
+          </div>
+          <div id="scoresList"></div>
+        </div>
+        <div class="card">
+          <div class="section-label" style="margin-bottom:12px;">
+            <span class="label-caps">Kitöltők</span>
+          </div>
+          <table class="members-table">
+            <thead><tr><th>Név</th><th>Dátum</th></tr></thead>
+            <tbody id="membersBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dimension deep-dive -->
+    <div class="dash-section">
+      <div class="section-label" style="margin-bottom:16px;">
+        <span class="label-caps">Dimenzió részletek</span>
+      </div>
+      <div id="dimDeepDive"></div>
+    </div>
+
+    <!-- AI Insights -->
+    <div class="dash-section">
+      <div class="section-label" style="margin-bottom:16px;">
+        <span class="label-caps">AI Coaching Insights</span>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px;">
+          <div>
+            <div style="font-family:'Exo',sans-serif;font-weight:800;font-size:1.05rem;margin-bottom:4px;">AI elemzés</div>
+            <div style="font-size:0.8rem;color:var(--muted);">Coaching szemléletű elemzés az aggregált adatok és nyílt válaszok alapján</div>
+          </div>
+          <button class="btn btn--yellow" id="insightsBtn" onclick="regenerateInsights()">
+            ✨ Insights újragenerálása
+          </button>
+        </div>
+        <div id="insightsArea" style="display:none;">
+          <div class="insights-box">
+            <div id="insightsContent"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="config.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/report.js"></script>
+</body>
+</html>

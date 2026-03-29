@@ -1,24 +1,24 @@
-# netlify.toml – Team Pulse
+# netlify.toml – Team Pulse v2
 
 [build]
   publish = "."
   functions = "netlify/functions"
   command = "node build-config.js"
 
-# Redirect /survey → /survey.html (clean URLs)
+# Clean URLs
 [[redirects]]
   from = "/survey"
   to   = "/survey.html"
   status = 200
 
 [[redirects]]
-  from = "/thank-you"
-  to   = "/thank-you.html"
+  from = "/report"
+  to   = "/report.html"
   status = 200
 
 [[redirects]]
-  from = "/admin"
-  to   = "/admin/index.html"
+  from = "/thank-you"
+  to   = "/thank-you.html"
   status = 200
 
 # Security headers

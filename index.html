@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Team Pulse – Csapatassessment</title>
+  <title>Team Pulse – Csapatfelmérés</title>
+  <meta name="description" content="Tudományosan megalapozott csapatfelmérés 5 dimenzión – AI coaching insightokkal. Ingyenes, önkiszolgáló.">
   <link href="https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <style>
@@ -13,7 +14,6 @@
       gap: 10px;
       padding: 48px 0 40px;
     }
-
     .dim-tile {
       background: var(--card);
       border: 1px solid var(--border);
@@ -22,17 +22,8 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      transition: all var(--t);
-      cursor: default;
     }
-
-    .dim-tile:hover {
-      border-color: rgba(222,209,20,0.25);
-      transform: translateY(-2px);
-    }
-
     .dim-tile__icon { font-size: 1.5rem; }
-
     .dim-tile__name {
       font-family: 'Exo', sans-serif;
       font-weight: 700;
@@ -40,34 +31,25 @@
       line-height: 1.3;
       color: var(--white);
     }
-
     .dim-tile__src {
       font-size: 0.7rem;
       color: var(--muted);
       line-height: 1.4;
     }
 
-    .how-section {
-      padding: 48px 0;
-      border-top: 1px solid var(--border);
-    }
-
+    .how-section { padding: 48px 0; border-top: 1px solid var(--border); }
     .how-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 2px;
       margin-top: 24px;
     }
-
     .how-step {
       background: var(--card);
       padding: 24px 20px;
-      position: relative;
     }
-
     .how-step:first-child { border-radius: var(--radius-lg) 0 0 var(--radius-lg); }
     .how-step:last-child  { border-radius: 0 var(--radius-lg) var(--radius-lg) 0; }
-
     .how-num {
       font-family: 'Exo', sans-serif;
       font-weight: 900;
@@ -77,115 +59,127 @@
       line-height: 1;
       margin-bottom: 12px;
     }
+    .how-step h3 { font-size: 0.9rem; margin-bottom: 6px; color: var(--white); }
+    .how-step p { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
 
-    .how-step h3 {
-      font-size: 0.9rem;
-      margin-bottom: 6px;
-      color: var(--white);
-    }
-
-    .how-step p {
-      font-size: 0.78rem;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .link-generator {
+    .create-section {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 32px;
+      padding: 40px;
       margin: 48px 0;
     }
-
-    .link-generator h2 {
+    .create-section h2 {
       font-family: 'Exo', sans-serif;
-      font-size: 1.1rem;
+      font-size: 1.3rem;
       font-weight: 800;
       margin-bottom: 6px;
     }
-
-    .link-generator p {
-      font-size: 0.82rem;
+    .create-section > p {
+      font-size: 0.85rem;
       color: var(--muted);
-      margin-bottom: 20px;
+      margin-bottom: 28px;
     }
-
-    .link-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
     }
-
-    .link-row input {
-      flex: 1;
-      min-width: 200px;
+    .form-field label {
+      display: block;
+      font-family: 'Exo', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
     }
-
-    .generated-result {
-      margin-top: 16px;
-      padding: 14px 18px;
-      background: var(--yellow-bg);
-      border: 1px solid rgba(222,209,20,0.2);
+    .form-field.full { grid-column: 1 / -1; }
+    .form-field textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 12px 14px;
+      background: var(--black2);
+      color: var(--white);
+      border: 1px solid var(--border);
       border-radius: var(--radius);
-      font-size: 0.82rem;
-      color: var(--yellow);
-      word-break: break-all;
-      cursor: pointer;
-      display: none;
+      font-size: 0.9rem;
+      font-family: system-ui, sans-serif;
+      resize: vertical;
+    }
+    .form-field textarea:focus { outline: none; border-color: var(--yellow); }
+    .form-field textarea::placeholder { color: var(--muted); }
+    .form-hint {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 4px;
     }
 
-    .generated-result:hover { background: rgba(222,209,20,0.18); }
-
-    .copy-hint {
-      font-size: 0.7rem;
+    /* Success screen */
+    .success-screen {
+      text-align: center;
+      padding: 40px 0;
+    }
+    .success-check {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: var(--yellow-bg);
+      border: 2px solid rgba(222,209,20,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 1.8rem;
+    }
+    .success-screen h2 {
+      font-family: 'Exo', sans-serif;
+      font-weight: 900;
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+    }
+    .success-screen p {
       color: var(--muted);
-      margin-top: 6px;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      max-width: 440px;
+      margin: 0 auto 24px;
     }
 
     @media (max-width: 900px) {
       .dim-grid { grid-template-columns: 1fr 1fr; }
       .how-grid { grid-template-columns: 1fr 1fr; }
-      .how-step:nth-child(2) { border-radius: 0 var(--radius-lg) 0 0; }
-      .how-step:nth-child(3) { border-radius: 0 0 0 var(--radius-lg); }
+      .form-grid { grid-template-columns: 1fr; }
     }
-
     @media (max-width: 600px) {
-      .dim-grid  { grid-template-columns: 1fr; }
-      .how-grid  { grid-template-columns: 1fr; }
-      .how-step  { border-radius: 0 !important; }
+      .dim-grid { grid-template-columns: 1fr; }
+      .how-grid { grid-template-columns: 1fr; }
+      .how-step { border-radius: 0 !important; }
       .how-step:first-child { border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important; }
       .how-step:last-child  { border-radius: 0 0 var(--radius-lg) var(--radius-lg) !important; }
+      .create-section { padding: 24px; }
     }
   </style>
 </head>
 <body>
 
-<!-- Top bar -->
 <div class="top-bar">
-  <span>Tudományosan megalapozott csapatassessment &nbsp;·&nbsp; 5 dimenzió &nbsp;·&nbsp; AI coaching insights</span>
-  <a href="admin/index.html">Facilitátor belépés ↗</a>
+  <span>Tudományosan megalapozott csapatfelmérés &nbsp;·&nbsp; 5 dimenzió &nbsp;·&nbsp; AI coaching insights</span>
 </div>
 
-<!-- Header -->
 <header class="site-header">
   <div class="header-inner">
-    <a href="index.html" class="logo-wordmark">
-      
-      TEAM PULSE
-    </a>
-    <div class="header-actions">
-      <a href="admin/index.html" class="btn btn--outline">Dashboard →</a>
-    </div>
+    <a href="index.html" class="logo-wordmark">TEAM PULSE</a>
   </div>
 </header>
 
 <main>
-  <!-- Display Hero -->
+  <!-- Hero -->
   <section class="display-hero fade-up">
     <div>
       <div style="margin-bottom:18px;">
-        <span class="pill pill--yellow">Assessment eszköz</span>
+        <span class="pill pill--yellow">Ingyenes csapatfelmérés</span>
       </div>
       <h1 class="display-hero__title">
         Mérd fel<br>
@@ -195,7 +189,7 @@
     </div>
     <div class="display-hero__meta">
       <p style="font-size:1rem;color:var(--white-dim);line-height:1.75;max-width:400px;">
-        Öt tudományosan megalapozott dimenzión keresztül feltárjuk, mi erősíti és mi gátolja a csapatod teljesítményét – konkrét coaching fókuszpontokkal.
+        Öt tudományosan megalapozott dimenzión keresztül feltárjuk, mi erősíti és mi gátolja a csapatod teljesítményét – AI coaching elemzéssel, automatikusan.
       </p>
       <div style="display:flex;gap:24px;flex-wrap:wrap;">
         <div>
@@ -221,7 +215,7 @@
 
   <div class="page-wrap">
 
-    <!-- 5 Dimensions grid -->
+    <!-- 5 dimensions -->
     <div class="dim-grid fade-up">
       <div class="dim-tile">
         <div class="dim-tile__icon">🛡️</div>
@@ -259,38 +253,69 @@
         <div class="how-step">
           <div class="how-num">01</div>
           <h3>Csapat létrehozása</h3>
-          <p>A facilitátor létrehoz egy csapatot a dashboardon és megosztja a kitöltési linket.</p>
+          <p>Add meg a csapatod nevét és a tagok email címeit. Ennyi az egész.</p>
         </div>
         <div class="how-step">
           <div class="how-num">02</div>
-          <h3>Kitöltés</h3>
-          <p>A csapattagok egyénileg töltik ki a 40 kérdéses kérdőívet (~15 perc).</p>
+          <h3>Emailes meghívó</h3>
+          <p>Minden tag kap egy személyes linket a kérdőív kitöltéséhez.</p>
         </div>
         <div class="how-step">
           <div class="how-num">03</div>
-          <h3>Aggregált dashboard</h3>
-          <p>Az eredmények azonnal megjelennek – radar chart, heatmap, nyílt válaszok.</p>
+          <h3>Kitöltés</h3>
+          <p>A csapattagok egyénileg, anonim módon töltik ki a 40 kérdést (~15 perc).</p>
         </div>
         <div class="how-step">
           <div class="how-num">04</div>
-          <h3>AI Coaching Insights</h3>
-          <p>Claude AI elemzi az adatokat és konkrét, csapatra szabott coaching fókuszokat ad.</p>
+          <h3>Automatikus riport</h3>
+          <p>Ha mindenki kész, emailben megkapod a riportot AI coaching elemzéssel.</p>
         </div>
       </div>
     </section>
 
-    <!-- Link generator -->
-    <div class="link-generator fade-up">
-      <h2>Generálj kitöltési linket</h2>
-      <p>Add meg a Team ID-t (a dashboardon találod) és máris küldheted a linket a csapatnak.</p>
-      <div class="link-row">
-        <input type="text" class="dark-input" id="teamIdInput" placeholder="Team ID (uuid)">
-        <input type="text" class="dark-input" id="memberInput" placeholder="Tag neve (opcionális, előtölti a mezőt)">
-        <button class="btn btn--yellow" onclick="generateLink()">Link generálása →</button>
+    <!-- Create team form -->
+    <div class="create-section fade-up" id="createSection">
+      <h2>Hozd létre a csapatodat</h2>
+      <p>Töltsd ki az alábbi mezőket, és a rendszer automatikusan meghívja a csapattagokat.</p>
+
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="teamName">Csapat neve</label>
+          <input type="text" class="dark-input" id="teamName" placeholder="pl. Marketing csapat" style="width:100%;">
+        </div>
+        <div class="form-field">
+          <label for="leaderName">A te neved</label>
+          <input type="text" class="dark-input" id="leaderName" placeholder="pl. Kovács Anna" style="width:100%;">
+        </div>
+        <div class="form-field full">
+          <label for="leaderEmail">A te email címed</label>
+          <input type="email" class="dark-input" id="leaderEmail" placeholder="pl. anna@ceg.hu" style="width:100%;max-width:400px;">
+          <div class="form-hint">Ide küldjük a riportot, ha mindenki kitöltötte.</div>
+        </div>
+        <div class="form-field full">
+          <label for="memberEmails">Csapattagok email címei</label>
+          <textarea id="memberEmails" placeholder="Soronként egy email cím:&#10;peter@ceg.hu&#10;eszter@ceg.hu&#10;gabor@ceg.hu"></textarea>
+          <div class="form-hint">Soronként egy email cím. Mindegyikre kiküldünk egy személyes meghívó linket.</div>
+        </div>
       </div>
-      <div class="generated-result" id="generatedResult" onclick="copyLink()">
-        <div id="linkText"></div>
-        <div class="copy-hint">Kattints a másoláshoz</div>
+
+      <button class="btn btn--yellow" id="createBtn" onclick="createTeam()" style="width:100%;justify-content:center;font-size:0.95rem;padding:14px;margin-top:8px;">
+        Csapat létrehozása és meghívók kiküldése →
+      </button>
+    </div>
+
+    <!-- Success screen (hidden) -->
+    <div id="successScreen" style="display:none;" class="create-section">
+      <div class="success-screen fade-up">
+        <div class="success-check">✓</div>
+        <h2>Csapatod létrehozva!</h2>
+        <p id="successMsg"></p>
+        <a class="btn btn--yellow" id="reportLink" href="#" style="font-size:0.95rem;padding:14px 32px;">
+          Riport oldal megtekintése →
+        </a>
+        <div style="margin-top:24px;">
+          <button class="btn btn--outline" onclick="resetForm()">Új csapat létrehozása</button>
+        </div>
       </div>
     </div>
 
@@ -298,33 +323,69 @@
 </main>
 
 <footer style="border-top:1px solid var(--border);padding:20px 32px;display:flex;align-items:center;justify-content:space-between;font-size:0.75rem;color:var(--muted);">
-  <span>Team Pulse v1.0 &nbsp;·&nbsp; Y2Y</span>
-  <span>Facilitátor eszköz</span>
+  <span>Team Pulse v2.0 &nbsp;·&nbsp; Y2Y</span>
+  <span>Csapatfelmérő eszköz</span>
 </footer>
 
 <script>
-  function generateLink() {
-    const teamId = document.getElementById('teamIdInput').value.trim();
-    const member = document.getElementById('memberInput').value.trim();
-    if (!teamId) { alert('Add meg a Team ID-t!'); return; }
+async function createTeam() {
+  const teamName     = document.getElementById('teamName').value.trim();
+  const leaderName   = document.getElementById('leaderName').value.trim();
+  const leaderEmail  = document.getElementById('leaderEmail').value.trim();
+  const emailsRaw    = document.getElementById('memberEmails').value.trim();
 
-    const base = window.location.href.replace(/index\.html.*$/, '').replace(/\/$/, '');
-    let link = `${base}/survey.html?team=${encodeURIComponent(teamId)}`;
-    if (member) link += `&member=${encodeURIComponent(member)}`;
-
-    document.getElementById('linkText').textContent = link;
-    document.getElementById('generatedResult').style.display = 'block';
+  if (!teamName || !leaderName || !leaderEmail || !emailsRaw) {
+    alert('Kérlek tölts ki minden mezőt!');
+    return;
   }
 
-  function copyLink() {
-    const link = document.getElementById('linkText').textContent;
-    navigator.clipboard.writeText(link).then(() => {
-      const el = document.getElementById('generatedResult');
-      const hint = el.querySelector('.copy-hint');
-      hint.textContent = '✓ Vágólapra másolva!';
-      setTimeout(() => hint.textContent = 'Kattints a másoláshoz', 2000);
+  const memberEmails = emailsRaw.split('\n').map(e => e.trim()).filter(Boolean);
+  if (memberEmails.length === 0) {
+    alert('Adj meg legalább egy email címet!');
+    return;
+  }
+
+  const btn = document.getElementById('createBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Létrehozás és küldés…';
+
+  try {
+    const res = await fetch('/.netlify/functions/create-team', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ teamName, leaderName, leaderEmail, memberEmails })
     });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Hiba történt.');
+
+    // Show success
+    document.getElementById('createSection').style.display = 'none';
+    document.getElementById('successScreen').style.display = 'block';
+    document.getElementById('successMsg').textContent =
+      `Meghívót küldtünk ${data.memberCount} címre. Ha mindenki kitöltötte a kérdőívet, automatikusan megkapod a riportot emailben (${leaderEmail}).`;
+
+    const reportUrl = `${window.location.origin}/report?token=${data.teamToken}`;
+    document.getElementById('reportLink').href = reportUrl;
+
+  } catch (err) {
+    alert('Hiba: ' + err.message);
+    btn.disabled = false;
+    btn.innerHTML = 'Csapat létrehozása és meghívók kiküldése →';
   }
+}
+
+function resetForm() {
+  document.getElementById('createSection').style.display = 'block';
+  document.getElementById('successScreen').style.display = 'none';
+  document.getElementById('teamName').value = '';
+  document.getElementById('leaderName').value = '';
+  document.getElementById('leaderEmail').value = '';
+  document.getElementById('memberEmails').value = '';
+  const btn = document.getElementById('createBtn');
+  btn.disabled = false;
+  btn.innerHTML = 'Csapat létrehozása és meghívók kiküldése →';
+}
 </script>
 
 </body>
