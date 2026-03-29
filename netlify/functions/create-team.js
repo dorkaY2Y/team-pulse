@@ -35,12 +35,14 @@ async function sb(path, opts = {}) {
   return text ? JSON.parse(text) : null;
 }
 
-async function sendEmail(to, subject, html) {
+async function sendEmail(to, subject, html, replyTo) {
   if (!RESEND_KEY) { console.warn('RESEND_API_KEY not set, skipping email to', to); return; }
+  const payload = { from: FROM_EMAIL, to, subject, html };
+  if (replyTo) payload.reply_to = replyTo;
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: FROM_EMAIL, to, subject, html })
+    body: JSON.stringify(payload)
   });
   if (!res.ok) console.error(`Email failed for ${to}:`, await res.text());
 }
@@ -80,8 +82,9 @@ exports.handler = async (event) => {
     for (const m of created) {
       const surveyUrl = `${SITE_URL}/survey?token=${m.token}`;
       await sendEmail(m.email,
-        `${teamName} – Kérlek, töltsd ki a Team Pulse kérdőívet`,
-        inviteHtml(teamName, leaderName, surveyUrl)
+        `Meghívó: ${teamName} csapatfelmérés – Team Pulse`,
+        inviteHtml(teamName, leaderName, surveyUrl),
+        leaderEmail.trim().toLowerCase()
       );
     }
 
@@ -160,7 +163,7 @@ function confirmHtml(teamName, memberCount, reportUrl) {
     </a>
 
     <p style="color:rgba(242,242,240,0.25);font-size:0.72rem;margin-top:40px;border-top:1px solid rgba(255,255,255,0.08);padding-top:20px;">
-      Mentsd el ezt az emailt – a riport linkje csak itt és az automatikus riport emailben található.
+      Mentsd meg ezt az emailt – a riport linkje csak itt és az automatikus riport emailben található.
     </p>
   </div>
 </body></html>`;
